@@ -8,4 +8,4 @@ dx = x2 - x1
 
 z = dy / dx
 
-print("Your change is:", z)
+print("The difference in your curtesian plain is:", z)
