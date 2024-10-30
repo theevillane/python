@@ -7,5 +7,5 @@ dy = y2 - y1
 dx = x2 - x1
 
 z = dy / dx
-
-print("The difference in your curtesian plain is:", z)
+i = dy * dx 
+print("The difference in your curtesian plain is:", z. i)
