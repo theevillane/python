@@ -22,6 +22,6 @@ df.dropna(subset=['Name', 'Age', 'Email'], inplace=True)  # Drop rows with NaN i
 # Remove duplicates if any
 df.drop_duplicates(inplace=True)
 
-# Display cleaned DataFrame
+# Show cleaned DataFrame
 print("Cleaned Data:")
 print(df)
