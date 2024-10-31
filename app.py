@@ -24,6 +24,7 @@ def home():
                 flash(f"{name} is already in the attendance list.")
             else:
                 flash("Name cannot be empty.")
+                #delete student
         elif 'delete_student' in request.form:
             password = request.form['admin_password']
             name = request.form['student_to_delete']
