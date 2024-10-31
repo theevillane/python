@@ -24,7 +24,12 @@ def construct_sentence(words):
             word_mapping["verb"].append(word)
         elif word in objects:
             word_mapping["object"].append(word)
+    
 
+    #feedback if no valid words are found
+    if not any(word_mapping.values()):
+        return "No valid words provided."
+    
     # Pick one of each if available or default to random selection
     subject = random.choice(word_mapping["subject"] or subjects)
     verb = random.choice(word_mapping["verb"] or verbs)
