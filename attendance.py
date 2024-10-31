@@ -9,7 +9,7 @@ def record_attendance():
     except FileNotFoundError:
         pass #File does not exist; start with an empty list
 
-    admin_password = "admin123" 
+    admin_password = ["admin123", "owandho254", "123456789"] 
 
     while True:
         print("\nAttendance Recorder")
