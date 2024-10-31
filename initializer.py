@@ -18,7 +18,7 @@ def assign_user_ids(names):
         # Combine initials with user number
         user_id = f"{initials}{i:03}"  # Pads the number with leading zeros (e.g., 001, 002)
         
-        #If duplicate to append the count
+        #If duplicate to append to count
         if counts [initials] > 1:
             user_id = f"{initials}{counts[initials]:03}"
         
