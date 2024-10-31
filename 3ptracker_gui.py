@@ -5,7 +5,7 @@ class ThreePointShotsTracker:
     def __init__(self, root):
         self.root = root
         self.root.title("Three-Point Shots Tracker")
-        self.root.configure(bg='lightgreen')  # Set background color to light green
+        self.root.configure(bg='gray')  # bg color set to gray
         
         self.shots_made = 0
         self.shots_list = []
