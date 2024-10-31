@@ -36,5 +36,5 @@ def basketball_score_tracker():
         else:
             print("Invalid option. Please choose a number between 1 and 5.")
 
-# Run the basketball score tracker
+# Run
 basketball_score_tracker()
