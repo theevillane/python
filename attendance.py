@@ -16,7 +16,8 @@ def record_attendance():
         print("2. View Attendance List")
         print("3. Save Attendance to File")
         print("4. Exit")
-        choice = input("Choose an option (1-4): ")
+        print("5. Delete student (Admin only)")
+        choice = input("Choose an option (1-5): ")
 
         if choice == '1':
             # Add a student to the attendance list
@@ -47,8 +48,21 @@ def record_attendance():
 
         elif choice == '4':
             # Exit the program
-            print("Exiting the attendance recorder.")
-            break
+            confirm_exit = input("Are you sure you want to exit? (yes/no): ").strip().lower()
+            if confirm_exit == 'yes':
+               print("Exiting the attendance recorder.")
+               break
+
+        elif choice == '5':
+            #Delete a student from the attendance list.
+            password = input("Enter your admin password: ")
+            if password == admin_password:
+                name = input("enter the stuident name to delete: ")
+                if name in attendance_list:
+                    attendance_list.remove(name)
+                    print(f"{name} has been deleted from the attendance list")
+                else:
+                    print(f"{name} is not in the attendance list")
 
         else:
             print("Invalid option. Please choose a number between 1 and 4.")
