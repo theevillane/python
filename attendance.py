@@ -1,6 +1,13 @@
 def record_attendance():
     # Initialize an empty list to store student names
     attendance_list = []
+    
+    #Load existing attendance from file if available.
+    try:
+        with open('attendance_list.txt', 'r') as file:
+            attendance_list = [line.strip() for line in file.readlines()]
+    except FileNotFoundError:
+        pass #File does not exist; start with an empty list
 
     while True:
         print("\nAttendance Recorder")
