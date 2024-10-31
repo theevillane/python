@@ -26,7 +26,7 @@ def construct_sentence(words):
             word_mapping["object"].append(word)
     
 
-    #feedback if no valid words are found
+    #A feedback if no valid words are found
     if not any(word_mapping.values()):
         return "No valid words provided."
     
