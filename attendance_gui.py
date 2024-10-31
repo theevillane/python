@@ -5,7 +5,7 @@ class AttendanceRecorder:
     def __init__(self, root):
         self.root = root
         self.root.title("Attendance Recorder")
-        self.root.configure(bg='lightgreen') #background colour
+        self.root.configure(bg='lightgreen') #background colour set to green
         
         self.attendance_list = self.load_attendance()
         self.admin_passwords = ["admin123", "owandho254", "123456789"]
