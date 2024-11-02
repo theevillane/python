@@ -23,7 +23,7 @@ def record_attendance():
 
         if choice == '1':
             # Add a student to the attendance list
-            name = input("Enter the student's name (or 'back' to return): ")
+            name = input("Enter the student's name (or 'back' to return): ").upper()
             if name.lower() == 'back':
                 continue
             if name:
@@ -58,8 +58,8 @@ def record_attendance():
         elif choice == '5':
             #Delete a student from the attendance list.
             password = input("Enter your admin password: ")
-            if password == admin_password:
-                name = input("enter the stuident name to delete: ")
+            if password in admin_password:
+                name = input("enter the student name to delete: ").upper()
                 if name in attendance_list:
                     attendance_list.remove(name)
                     print(f"{name} has been deleted from the attendance list")
