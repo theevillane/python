@@ -76,5 +76,5 @@ def record_attendance():
         else:
             print("Invalid option. Please choose a number between 1 and 5.")
 
-# Run the attendance recorder
+# Run the function 
 record_attendance()
