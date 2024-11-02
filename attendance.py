@@ -21,6 +21,7 @@ def record_attendance():
         print("5. Delete student (Admin only)")
         choice = input("Choose an option (1-5): ")
 
+        #student name changed to uppercase 
         if choice == '1':
             # Add a student to the attendance list
             name = input("Enter the student's name (or 'back' to return): ").upper()
@@ -55,6 +56,7 @@ def record_attendance():
                print("Exiting the attendance recorder.")
                break
 
+        #delete input changed to uppercase
         elif choice == '5':
             #Delete a student from the attendance list.
             password = input("Enter your admin password: ")
