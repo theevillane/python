@@ -24,11 +24,15 @@ def record_attendance():
         if choice == '1':
             # Add a student to the attendance list
             name = input("Enter the student's name (or 'back' to return): ").upper()
-            if name.lower() == 'back':
-                continue
             if name:
-                attendance_list.append(name)
-                print(f"{name} has been added to the attendance list.")
+                #check for duplicates
+                if name in map(str.upper, attendance_list):
+                    print(f"Sorry! {name} is already in the attendance list.")
+                else:
+                    attendance_list.append(name)
+                    print(f"{name} has been added to the attendance list.")
+                continue
+            
             else:
                 print("Name cannot be empty.")
         
