@@ -12,8 +12,9 @@ def record_attendance():
     admin_password = ["admin123", "owandho254", "123456789"] 
 
     while True:
-        print("\nAttendance Recorder")
+        print("\nAttendance List")
         print("-------------------")
+        print()    
         print("1. Add Student")
         print("2. View Attendance List")
         print("3. Save Attendance to File")
