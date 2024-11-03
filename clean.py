@@ -25,3 +25,4 @@ df.drop_duplicates(inplace=True)
 # Show cleaned DataFrame
 print("Cleaned Data:")
 print(df)
+print("Your clean data")
