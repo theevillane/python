@@ -1,10 +1,23 @@
 import hashlib
+import re
 
 def hash_password(password):
     """Hash a password for secure storage."""
     return hashlib.sha256(password.encode()).hexdigest()
 
-
+def is_strong_password(password):
+    """Check if the password is strong."""
+    if len(password) < 8:
+        return False
+    if not re.search(r"[a-z]", password):
+        return False
+    if not re.search(r"[A-Z]", password):
+        return False
+    if not re.search(r"[0-9]", password):
+        return False
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        return False
+    return True
     # Load existing attendance from file if available.
 def load_attendance():
     try:
@@ -36,6 +49,9 @@ def record_attendance():
                 print("Username already exists. Try a different one.")
             else:
                 password = input("Enter a password: ")
+                if not is_strong_password(password):
+                    print("Password is weak. please choose a stronger password.")
+                    continue #go back to registration prompt
                 is_admin = input("Is this user an admin? (yes/no): ").strip().lower() == 'yes'
                 if is_admin:
                     admin_users[username] = hash_password(password)  # Store admin user
