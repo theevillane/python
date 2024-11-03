@@ -1,5 +1,6 @@
 import hashlib
 
+#secure user password
 def hash_password(password):
     """Hash a password for secure storage."""
     return hashlib.sha256(password.encode()).hexdigest()
