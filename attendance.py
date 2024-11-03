@@ -1,4 +1,5 @@
 import hashlib
+import re
 
 def hash_password(password):
     """Hash a password for secure storage."""
