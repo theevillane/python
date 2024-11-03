@@ -4,20 +4,24 @@ def hash_password(password):
     """Hash a password for secure storage."""
     return hashlib.sha256(password.encode()).hexdigest()
 
+
+    # Load existing attendance from file if available.
+def load_attendance():
+    try:
+        with open('attendance_list.txt', 'r') as file:
+            return [line.strip() for line in file.readlines()]
+    except FileNotFoundError:
+        return[] # File does not exist; start with an empty list
+
+    
 def record_attendance():
     # Initialize attendance list and user credentials
     attendance_list = []
     users = {}  # Dictionary to store usernames and hashed passwords
     admin_users = {}  # Dictionary for admin users
 
-    # Load existing attendance from file if available.
-    try:
-        with open('attendance_list.txt', 'r') as file:
-            attendance_list = [line.strip() for line in file.readlines()]
-    except FileNotFoundError:
-        pass  # File does not exist; start with an empty list
-
     admin_password = "admin1234"  # Set a fixed password for admin
+
 
     while True:
         print("\n1. Sign Up")
@@ -27,7 +31,7 @@ def record_attendance():
 
         if choice == '1':
             # User registration
-            username = input("Enter a username: ")
+            username = input("Enter a username: ").lower()
             if username in users or username in admin_users:
                 print("Username already exists. Try a different one.")
             else:
@@ -42,7 +46,7 @@ def record_attendance():
         
         elif choice == '2':
             # User authentication
-            username = input("Enter your username: ")
+            username = input("Enter your username: ").lower()
             password = input("Enter your password: ")
             hashed_password = hash_password(password)
 
@@ -114,8 +118,10 @@ def record_attendance():
                     print("Invalid option. Please choose a number between 1 and 5.")
 
         elif choice == '3':
-            print("Exiting the program.")
-            break
+            confirm_exit = input("Are you sure you want to exit? (yes/no): ").strip().lower()
+            if confirm_exit == 'yes':
+                print("Exiting the Program.")
+                break
 
         else:
             print("Invalid option. Please choose a number between 1 and 3.")
