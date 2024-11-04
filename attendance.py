@@ -35,14 +35,6 @@ def save_attendance_to_mongo(attendance_list, username):
     }
     collection.insert_one(attendance_entry)
 
-    # Load existing attendance from file if available.
-#def load_attendance():
- #   try:
-  #      with open('attendance_list.txt', 'r') as file:
-   #         return [line.strip() for line in file.readlines()]
-    #except FileNotFoundError:
-     #   return[] # File does not exist; start with an empty list
-
     
 def record_attendance():
     # Initialize attendance list and user credentials
