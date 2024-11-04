@@ -87,18 +87,18 @@ def record_attendance():
                 #show admin only options if the user is admin
                 if is_admin:
                     print("2. Add Student (Admin Only)")
-                    print("6. Delete Student")
-                    choice_limit = 6
+                    print("3. Delete Student")
+                    counts = 4
                 else:
-                    choice_limit = 5
+                    counts = 3
 
                 
-                print("3. View attendance list")
-                print("4. Save Attendance to File")
-                print("5. Exit")
+                print(f"{counts}. View attendance list")
+                print(f"{counts + 1}. Save Attendance to File")
+                print(f"{counts + 1 +1}. Exit")
                 
                     
-                choice = input(f"Choose an option (1-{choice_limit}): ")
+                choice = input(f"Choose an option (1-{counts + 1 +1}): ")
 
                 if choice == '1':
                     # Add the logged-in user's name to the attendance list
