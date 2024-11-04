@@ -1,5 +1,6 @@
 import hashlib
 import re
+from pymongo import MongoClient
 
 def hash_password(password):
     """Hash a password for secure storage."""
