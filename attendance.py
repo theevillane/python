@@ -136,7 +136,7 @@ def record_attendance():
                         attendance_list.append(name)
                         print(f"{name} has been added to the attendance list.")
 
-                elif choice == '4' :
+                elif choice == str(counts):
                     # View the attendance list
                     if attendance_list:
                         print("\nAttendance List:")
@@ -145,14 +145,12 @@ def record_attendance():
                     else:
                         print("No students have attended the event yet.")
 
-                elif choice == '5':
-                    # Save attendance list to a file
-                    with open('attendance_list.txt', 'w') as file:
-                        for student in attendance_list:
-                            file.write(f"{student}\n")
-                    print("Attendance list has been saved to 'attendance_list.txt'.")
+                elif choice == str(counts + 1):
+                    # Save attendance list to MongoDB
+                    save_attendance_to_mongo(attendance_list, logged_in_user)
+                    print("Attendance list has been saved to MongoDB.")
 
-                elif choice == '6':
+                elif choice == str(counts + 1 + 1):
                     # Exit the program
                     confirm_exit = input("Are you sure you want to exit? (yes/no): ").strip().lower()
                     if confirm_exit == 'yes':
