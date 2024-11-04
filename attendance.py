@@ -19,13 +19,29 @@ def is_strong_password(password):
     if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
         return False
     return True
+
+def connect_to_mongo():
+    """Connect to the MongoDB database."""
+    client = MongoClient("mongodb://localhost:27017/") #Update with yor MongoDb URI
+    return client["attendance_db"] #Replace with your database name
+
+def save_attendance_to_mongo(attendance_list, username):
+    """Save the attendance list to MongoDB."""
+    db = connect_to_mongo()
+    collection = db["attendance"] #Replace with your collection name
+    attendance_entry = {
+        "username": username,
+        "attendance": attendance_list
+    }
+    collection.insert_one(attendance_entry)
+
     # Load existing attendance from file if available.
-def load_attendance():
-    try:
-        with open('attendance_list.txt', 'r') as file:
-            return [line.strip() for line in file.readlines()]
-    except FileNotFoundError:
-        return[] # File does not exist; start with an empty list
+#def load_attendance():
+ #   try:
+  #      with open('attendance_list.txt', 'r') as file:
+   #         return [line.strip() for line in file.readlines()]
+    #except FileNotFoundError:
+     #   return[] # File does not exist; start with an empty list
 
     
 def record_attendance():
