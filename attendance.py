@@ -98,7 +98,7 @@ def record_attendance():
                 print("5. Exit")
                 
                     
-                choice = input(f"Choose an option (1-{choice-limit}): ")
+                choice = input(f"Choose an option (1-{choice_limit}): ")
 
                 if choice == '1':
                     # Add the logged-in user's name to the attendance list
