@@ -83,12 +83,13 @@ def record_attendance():
                 print("\nAttendance List")
                 print("-------------------")
                 print("1. Add Student")
-                print("2. View Attendance List")
-                print("3. Save Attendance to File")
-                print("4. Exit")
+                print("2. Add Student (Admin Only)")
+                print("3. View attendance list")
+                print("4. Save Attendance to File")
+                print("5. Exit")
                 if is_admin:
-                    print("5. Delete Student")
-                choice = input("Choose an option (1-5): ")
+                    print("6. Delete Student")
+                choice = input("Choose an option (1-6): ")
 
                 if choice == '1':
                     # Add the logged-in user's name to the attendance list
@@ -99,7 +100,16 @@ def record_attendance():
                         attendance_list.append(name)
                         print(f"{name} has been added to the attendance list.")
                 
-                elif choice == '2':
+                elif choice == '2' and is_admin:
+                    #Adds student by name
+                    name = input("Enter the student's name to add: ").upper()
+                    if name in map(str.upper, attendance_list):
+                        print(f"Sorry! {name} is already in the attendance list.")
+                    else:
+                        attendance_list.append(name)
+                        print(f"{name} has been added to the attendance list.")
+
+                elif choice == '3' :
                     # View the attendance list
                     if attendance_list:
                         print("\nAttendance List:")
@@ -108,21 +118,21 @@ def record_attendance():
                     else:
                         print("No students have attended the event yet.")
 
-                elif choice == '3':
+                elif choice == '4':
                     # Save attendance list to a file
                     with open('attendance_list.txt', 'w') as file:
                         for student in attendance_list:
                             file.write(f"{student}\n")
                     print("Attendance list has been saved to 'attendance_list.txt'.")
 
-                elif choice == '4':
+                elif choice == '5':
                     # Exit the program
                     confirm_exit = input("Are you sure you want to exit? (yes/no): ").strip().lower()
                     if confirm_exit == 'yes':
                         print("Exiting the attendance recorder.")
                         break
 
-                elif choice == '5' and is_admin:
+                elif choice == '6' and is_admin:
                     # Delete a student from the attendance list.
                     name = input("Enter the student name to delete: ").upper()
                     if name in attendance_list:
