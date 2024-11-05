@@ -18,4 +18,4 @@ def get_member(name):
     return f"Member: {name}"
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
