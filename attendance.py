@@ -104,10 +104,10 @@ def record_attendance():
                 
                 print(f"{counts}. View attendance list")
                 print(f"{counts + 1}. Save Attendance to File")
-                print(f"{counts + 1 +1}. Exit")
+                print(f"{counts + 2}. Exit")
                 
                     
-                choice = input(f"Choose an option (1-{counts + 1 +1}): ")
+                choice = input(f"Choose an option (1-{counts + 2}): ")
 
                 if choice == '1':
                     # Add the logged-in user's name to the attendance list
@@ -142,7 +142,7 @@ def record_attendance():
                     save_attendance_to_mongo(attendance_list, logged_in_user)
                     print("Attendance list has been saved to MongoDB.")
 
-                elif choice == str(counts + 1 + 1):
+                elif choice == str(counts + 2):
                     # Exit the program
                     confirm_exit = input("Are you sure you want to exit? (yes/no): ").strip().lower()
                     if confirm_exit == 'yes':
