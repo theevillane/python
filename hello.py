@@ -2,11 +2,11 @@ from flask import Flask
 app = Flask(__name__)
 
 @app.route("/")
-def hello():
+def index():
     return "Index!"
 
 @app.route("/hello")
-def hello():
+def hello_world():
     return "Hello world!"
 
 @app.route("/members")
@@ -18,4 +18,4 @@ def get_member(name):
     return f"Member: {name}"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
