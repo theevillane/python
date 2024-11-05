@@ -10,9 +10,7 @@ def is_strong_password(password):
     """Check if the password is strong."""
     if len(password) < 8:
         return False
-    if not re.search(r"[a-z]", password):
-        return False
-    if not re.search(r"[A-Z]", password):
+    if not re.search(r"[A-Za-z]", password):
         return False
     if not re.search(r"[0-9]", password):
         return False
