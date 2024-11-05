@@ -6,7 +6,7 @@ def index():
     return "Index!"
 
 @app.route("/hello")
-def hello_world():
+def hello():
     return "Hello world!"
 
 @app.route("/members")
