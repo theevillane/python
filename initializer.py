@@ -28,8 +28,8 @@ def assign_user_ids(names):
     return user_ids
 
 # Example usage
-#names = ["Alice Johnson", "Bob Smith", "Charlie Brown", "Alice Smith"]
-#user_ids = assign_user_ids(names)
+names = ["Alice Johnson", "Bob Smith", "Charlie Brown", "Alice Smith"]
+user_ids = assign_user_ids(names)
 
-#for name, user_id in user_ids.items():
- #   print(f"Name: {name}, User ID: {user_id}")
+for name, user_id in user_ids.items():
+    print(f"Name: {name}, User ID: {user_id}")
