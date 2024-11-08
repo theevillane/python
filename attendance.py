@@ -43,6 +43,7 @@ def record_attendance():
     admin_password = "admin1234"  # Set a fixed password for admin
 
 
+    #user uptions
     while True:
         print("\n1. Sign Up")
         print("2. Sign In")
