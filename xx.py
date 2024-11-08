@@ -10,7 +10,6 @@ z = dy / dx
 i = dy * dx 
 
 print("The difference in your curtesian plain is:", z, i)
-print("The difference in your curtesian plain is:", z. i)
 
 def f(x):
     return x ** 2
