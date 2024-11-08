@@ -46,7 +46,7 @@ def record_attendance():
     #user uptions
     while True:
         print("\n1. Sign Up")
-        print("2. Sign In")
+        print("2. Login")
         print("3. Exit")
         choice = input("Choose an option (1-3): ")
 
