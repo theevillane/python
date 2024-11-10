@@ -46,6 +46,8 @@ def save_attendance_to_mongo(attendance_list, username):
 
 def register_user(users, admin_users):
     """Register a new user with role and password validation."""
+    ADMIN_CONFIRM_PASSWORD = os.getenv("ADMIN_CONFIRM_PASSSWORD", "secureAdminPass") #Admin confirmation password for added security
+
     username = input("Enter a username: ").lower()
     if username in users or username in admin_users:
         print("Username already exists. Try a different one.")
@@ -57,13 +59,17 @@ def register_user(users, admin_users):
         return
     
     is_admin = input("Is this user an admin? (yes/no): ").strip().lower() == 'yes'
-    hashed_password = hash_password(password)
-    
+    #hashed_password = hash_password(password)
     if is_admin:
-        admin_users[username] = hashed_password
+        confirm_admin_password = getpass("Enter the admin confirmation password: ")
+        if hash_password(confirm_admin_password) != hash_password(ADMIN_CONFIRM_PASSWORD):
+            print("Admin confirmation password is incorrect. Registration failed.")
+            return
+            
+        admin_users[username] = hash_password
         print("Admin registration successful!")
     else:
-        users[username] = hashed_password
+        users[username] = hash_password
         print("User registration successful!")
 
 def login_user(users, admin_users):
@@ -148,15 +154,19 @@ def record_attendance(users, admin_users):
                     save_attendance_to_mongo(attendance_list, username)
 
                 elif menu_choice == '6':
-                    print("Logging out.")
-                    break
+                    confirm_logout = input("Are you sure you want to logout? yes/no")
+                    if confirm_logout == 'yes':
+                         print("Logging out.")
+                         break
 
-                else:
-                    print("Invalid option. Please choose a valid number.")
+                    else:
+                        print("Invalid option. Please choose a valid number.")
 
         elif user_choice == '3':
-            print("Exiting the Program.")
-            break
+            confirm_exit = input("Are you sure you want to exit? yes/no").strip().lower()
+            if confirm_exit():
+                print("Exiting the Program.")
+                break
 
         else:
             print("Invalid option. Please choose a number between 1 and 3.")
