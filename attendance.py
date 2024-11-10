@@ -1,6 +1,8 @@
 import hashlib
 import re
 from pymongo import MongoClient
+from getpass import getpass
+import os
 
 def hash_password(password):
     """Hash a password for secure storage."""
@@ -19,154 +21,150 @@ def is_strong_password(password):
     return True
 
 def connect_to_mongo():
-    """Connect to the MongoDB database."""
-    client = MongoClient("mongodb://localhost:27017/") #Update with yor MongoDb URI
-    return client["attendance_db"] #Replace with your database name
+    """Connect to the MongoDB database with error handling."""
+    try:
+        client = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/"))  # Use environment variable for MongoDB URI
+        print("Connected to MongoDB.")
+        return client["attendance_db"]  # Replace with your database name
+    except Exception as e:
+        print(f"Failed to connect to MongoDB: {e}")
+        return None
 
 def save_attendance_to_mongo(attendance_list, username):
-    """Save the attendance list to MongoDB."""
+    """Save or update the attendance list to MongoDB."""
     db = connect_to_mongo()
-    collection = db["attendance"] #Replace with your collection name
-    attendance_entry = {
-        "username": username,
-        "attendance": attendance_list
-    }
-    collection.insert_one(attendance_entry)
+    if db:
+        collection = db["attendance"]  # Replace with your collection name
+        attendance_entry = {
+            "username": username,
+            "attendance": attendance_list
+        }
+        collection.update_one({"username": username}, {"$set": attendance_entry}, upsert=True)
+        print("Attendance list has been saved or updated in MongoDB.")
+    else:
+        print("Could not save to MongoDB. Check connection.")
 
+def register_user(users, admin_users):
+    """Register a new user with role and password validation."""
+    username = input("Enter a username: ").lower()
+    if username in users or username in admin_users:
+        print("Username already exists. Try a different one.")
+        return
+
+    password = getpass("Enter a password: ")
+    if not is_strong_password(password):
+        print("Password is weak. Please choose a stronger password.")
+        return
     
-def record_attendance():
-    # Initialize attendance list and user credentials
+    is_admin = input("Is this user an admin? (yes/no): ").strip().lower() == 'yes'
+    hashed_password = hash_password(password)
+    
+    if is_admin:
+        admin_users[username] = hashed_password
+        print("Admin registration successful!")
+    else:
+        users[username] = hashed_password
+        print("User registration successful!")
+
+def login_user(users, admin_users):
+    """Log in a user and return username and role."""
+    username = input("Enter your username: ").lower()
+    password = getpass("Enter your password: ")
+    hashed_password = hash_password(password)
+
+    if username in users and users[username] == hashed_password:
+        print(f"Welcome, {username}!")
+        return username, False
+    elif username in admin_users and admin_users[username] == hashed_password:
+        print(f"Welcome, Admin {username}!")
+        return username, True
+    else:
+        print("Invalid username or password. Please try again.")
+        return None, None
+
+def record_attendance(users, admin_users):
+    """Main function to handle the attendance system."""
     attendance_list = []
-    users = {}  # Dictionary to store usernames and hashed passwords
-    admin_users = {}  # Dictionary for admin users
 
-    admin_password = "admin1234"  # Set a fixed password for admin
-
-
-    #user uptions
     while True:
         print("\n1. Sign Up")
         print("2. Login")
         print("3. Exit")
-        choice = input("Choose an option (1-3): ")
+        user_choice = input("Choose an option (1-3): ")
 
-        if choice == '1':
-            # User registration
-            username = input("Enter a username: ").lower()
-            if username in users or username in admin_users:
-                print("Username already exists. Try a different one.")
-            else:
-                password = input("Enter a password: ")
-                if not is_strong_password(password):
-                    print("Password is weak. please choose a stronger password.")
-                    continue #go back to registration prompt
-                is_admin = input("Is this user an admin? (yes/no): ").strip().lower() == 'yes'
-                if is_admin:
-                    admin_users[username] = hash_password(password)  # Store admin user
-                    print("Admin registration successful!")
-                else:
-                    users[username] = hash_password(password)  # Store regular user
-                    print("User registration successful!")
+        if user_choice == '1':
+            register_user(users, admin_users)
         
-        elif choice == '2':
-            # User authentication
-            username = input("Enter your username: ").lower()
-            password = input("Enter your password: ")
-            hashed_password = hash_password(password)
-
-            if username in users and users[username] == hashed_password:
-                print(f"Welcome, {username}!")
-                logged_in_user = username
-                is_admin = False
-            elif username in admin_users and admin_users[username] == hashed_password:
-                print(f"Welcome, Admin {username}!")
-                logged_in_user = username
-                is_admin = True
-            else:
-                print("Invalid username or password. Please try again.")
+        elif user_choice == '2':
+            username, is_admin = login_user(users, admin_users)
+            if username is None:
                 continue
 
-            # Start attendance recording
             while True:
-                print("\nAttendance List")
-                print("-------------------")
-                print("1. Add Your name(Student)")
-
-                #show admin only options if the user is admin
+                print("\nAttendance Menu")
+                print("1. Add Your Name (Student)")
                 if is_admin:
                     print("2. Add Student (Admin Only)")
                     print("3. Delete Student")
-                    counts = 4
-                else:
-                    counts = 3
+                print("4. View Attendance List")
+                print("5. Save Attendance to MongoDB")
+                print("6. Log Out")
 
-                
-                print(f"{counts}. View attendance list")
-                print(f"{counts + 1}. Save Attendance to File")
-                print(f"{counts + 2}. Exit")
-                
-                    
-                choice = input(f"Choose an option (1-{counts + 2}): ")
+                menu_choice = input("Choose an option: ")
 
-                if choice == '1':
-                    # Add the logged-in user's name to the attendance list
-                    name = logged_in_user.upper()
+                if menu_choice == '1':
+                    name = username.upper()
                     if name in map(str.upper, attendance_list):
-                        print(f"Sorry! {name} is already in the attendance list.")
+                        print(f"{name} is already in the attendance list.")
                     else:
                         attendance_list.append(name)
                         print(f"{name} has been added to the attendance list.")
-                
-                
-                elif choice == '2' and is_admin:
-                    #Adds student by name
+
+                elif menu_choice == '2' and is_admin:
                     name = input("Enter the student's name to add: ").upper()
                     if name in map(str.upper, attendance_list):
-                        print(f"Sorry! {name} is already in the attendance list.")
+                        print(f"{name} is already in the attendance list.")
                     else:
                         attendance_list.append(name)
                         print(f"{name} has been added to the attendance list.")
 
-                elif choice == str(counts):
-                    # View the attendance list
-                    if attendance_list:
-                        print("\nAttendance List:")
-                        for index, student in enumerate(attendance_list, start=1):
-                            print(f"{index}. {student}")
-                    else:
-                        print("No students have attended the event yet.")
-
-                elif choice == str(counts + 1):
-                    # Save attendance list to MongoDB
-                    save_attendance_to_mongo(attendance_list, logged_in_user)
-                    print("Attendance list has been saved to MongoDB.")
-
-                elif choice == str(counts + 2):
-                    # Exit the program
-                    confirm_exit = input("Are you sure you want to exit? (yes/no): ").strip().lower()
-                    if confirm_exit == 'yes':
-                        print("Exiting the attendance recorder.")
-                        break
-
-                elif choice == '3' and is_admin:
-                    # Delete a student from the attendance list.
-                    name = input("Enter the student name to delete: ").upper()
+                elif menu_choice == '3' and is_admin:
+                    name = input("Enter the student's name to delete: ").upper()
                     if name in attendance_list:
                         attendance_list.remove(name)
-                        print(f"{name} has been deleted from the attendance list")
+                        print(f"{name} has been deleted from the attendance list.")
                     else:
-                        print(f"{name} is not in the attendance list")
-                else:
-                    print("Invalid option. Please choose a number between 1 and 5.")
+                        print(f"{name} is not in the attendance list.")
 
-        elif choice == '3':
-            confirm_exit = input("Are you sure you want to exit? (yes/no): ").strip().lower()
-            if confirm_exit == 'yes':
-                print("Exiting the Program.")
-                break
+                elif menu_choice == '4':
+                    if attendance_list:
+                        print("\nAttendance List:")
+                        for idx, student in enumerate(attendance_list, start=1):
+                            print(f"{idx}. {student}")
+                    else:
+                        print("No students have attended yet.")
+
+                elif menu_choice == '5':
+                    save_attendance_to_mongo(attendance_list, username)
+
+                elif menu_choice == '6':
+                    print("Logging out.")
+                    break
+
+                else:
+                    print("Invalid option. Please choose a valid number.")
+
+        elif user_choice == '3':
+            print("Exiting the Program.")
+            break
 
         else:
             print("Invalid option. Please choose a number between 1 and 3.")
 
+# Set up environment and initialize the attendance system
+os.environ["MONGO_URI"] = "mongodb://localhost:27017/"  # Set MongoDB URI in environment variable
+users = {}  # Dictionary to store usernames and hashed passwords
+admin_users = {}  # Dictionary for admin users
+
 # Run the attendance recorder
-record_attendance()
+record_attendance(users, admin_users)
