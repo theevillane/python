@@ -66,10 +66,10 @@ def register_user(users, admin_users):
             print("Admin confirmation password is incorrect. Registration failed.")
             return
             
-        admin_users[username] = hash_password
+        admin_users[username] = hash_password(password)
         print("Admin registration successful!")
     else:
-        users[username] = hash_password
+        users[username] = hash_password(password)
         print("User registration successful!")
 
 def login_user(users, admin_users):
@@ -163,7 +163,7 @@ def record_attendance(users, admin_users):
                         print("Invalid option. Please choose a valid number.")
 
         elif user_choice == '3':
-            confirm_exit = input("Are you sure you want to exit? yes/no").strip().lower()
+            confirm_exit = input("Are you sure you want to exit? yes/no: ").strip().lower()
             if confirm_exit():
                 print("Exiting the Program.")
                 break
