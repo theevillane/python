@@ -158,9 +158,11 @@ def record_attendance(users, admin_users):
                     if confirm_logout == 'yes':
                          print("Logging out.")
                          break
-
                     else:
-                        print("Invalid option. Please choose a valid number.")
+                        print("Logout cancelled.")
+
+                else:
+                    print("Invalid option. Please choose a valid number.")
 
         elif user_choice == '3':
             confirm_exit = input("Are you sure you want to exit? yes/no: ").strip().lower()
