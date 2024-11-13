@@ -49,7 +49,7 @@ def save_attendance_to_mongo(attendance_list, username):
 
 def register_user(users, admin_users):
     """Register a new user with role and password validation."""
-    ADMIN_CONFIRM_PASSWORD_HASH = hash_password(os.getenv("ADMIN_CONFIRM_PASSSWORD", "secureadminpass")) #Admin confirmation password for added security
+    ADMIN_CONFIRM_PASSWORD_HASH = hash_password(os.getenv("ADMIN_CONFIRM_PASSWORD", "secureadminpass")) #Admin confirmation password for added security
 
     username = input("Enter a username: ").lower()
     if username in users or username in admin_users:
