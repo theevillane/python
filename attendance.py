@@ -165,10 +165,13 @@ def record_attendance(users, admin_users):
                     print("Invalid option. Please choose a valid number.")
 
         elif user_choice == '3':
-            confirm_exit = input("Are you sure you want to exit? yes/no: ").strip().lower()
-            if confirm_exit():
-                print("Exiting the Program.")
-                break
+            def confirm_exit():
+                confirm_exit = input("Are you sure you want to exit? yes/no: ").strip().lower()
+                if confirm_exit == 'yes':
+                    print("Exiting the Program")
+                    return True
+                return False
+               
 
         else:
             print("Invalid option. Please choose a number between 1 and 3.")
