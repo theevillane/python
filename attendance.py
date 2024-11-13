@@ -130,12 +130,15 @@ def record_attendance(users, admin_users):
                 menu_choice = input("Choose an option: ")
 
                 if menu_choice == '1':
-                    name = username.upper()
-                    if name in map(str.upper, attendance_list):
-                        print(f"{name} is already in the attendance list.")
+                    if is_admin:
+                        print("Error admins cannot add their name to the attendance list")
                     else:
-                        attendance_list.append(name)
-                        print(f"{name} has been added to the attendance list.")
+                        name = username.upper()
+                        if name in map(str.upper, attendance_list):
+                            print(f"{name} is already in the attendance list.")
+                        else:
+                            attendance_list.append(name)
+                            print(f"{name} has been added to the attendance list.")
 
                 elif menu_choice == '2' and is_admin:
                     name = input("Enter the student's name to add: ").upper()
