@@ -49,7 +49,7 @@ def save_attendance_to_mongo(attendance_list, username):
 
 def register_user(users, admin_users):
     """Register a new user with role and password validation."""
-    ADMIN_CONFIRM_PASSWORD_HASH = hash_password(os.getenv("ADMIN_CONFIRM_PASSWORD", "secureadminpass")) #Admin confirmation password for added security
+    ADMIN_CONFIRM_PASSWORD_HASH = hash_password(os.getenv("ADMIN_CONFIRM_PASSWORD", "owandho@254")) #Admin confirmation password for added security
 
     username = input("Enter a username: ").lower()
     if username in users or username in admin_users:
@@ -117,6 +117,9 @@ def record_attendance(users, admin_users):
             if username is None:
                 continue
 
+            
+            #additional debug statements
+            print(f"Debug: Logged in user= '{username}', is_admin ={is_admin}")
             while True:
                 print("\nAttendance Menu")
                 print("1. Add Your Name (Student)")
@@ -130,6 +133,7 @@ def record_attendance(users, admin_users):
                 menu_choice = input("Choose an option: ")
 
                 if menu_choice == '1':
+                    print(f"Debug: is_admin = {is_admin}")
                     if is_admin:
                         print("Error admins cannot add their name to the attendance list")
                     else:
@@ -168,7 +172,7 @@ def record_attendance(users, admin_users):
                     save_attendance_to_mongo(attendance_list, username)
 
                 elif menu_choice == '6':
-                    confirm_logout = input("Are you sure you want to logout? yes/no")
+                    confirm_logout = input("Are you sure you want to logout? yes/no: ")
                     if confirm_logout == 'yes':
                          print("Logging out.")
                          break
