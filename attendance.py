@@ -34,15 +34,18 @@ def save_attendance_to_mongo(attendance_list, username):
     """Save or update the attendance list to MongoDB."""
     db = connect_to_mongo()
     if db:
-        collection = db["attendance"]  # Replace with your collection name
-        attendance_entry = {
-            "username": username,
-            "attendance": attendance_list
-        }
-        collection.update_one({"username": username}, {"$set": attendance_entry}, upsert=True)
-        print("Attendance list has been saved or updated in MongoDB.")
+        try:
+            collection = db["attendance"]  # Replace with your collection name
+            attendance_entry = {
+                "username": username,
+                "attendance": attendance_list
+            }
+            collection.update_one({"username": username}, {"$set": attendance_entry}, upsert=True)
+            print("Attendance list has been saved or updated in MongoDB.")
+        except Exception as e:
+            print(f"Failed to save attendance: {e}
     else:
-        print("Could not save to MongoDB. Check connection.")
+         print("Could not save to MongoDB. Check connection.")
 
 def register_user(users, admin_users):
     """Register a new user with role and password validation."""
