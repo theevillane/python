@@ -43,7 +43,7 @@ def save_attendance_to_mongo(attendance_list, username):
             collection.update_one({"username": username}, {"$set": attendance_entry}, upsert=True)
             print("Attendance list has been saved or updated in MongoDB.")
         except Exception as e:
-            print(f"Failed to save attendance: {e}
+            print(f"Failed to save attendance: {e}")
     else:
          print("Could not save to MongoDB. Check connection.")
 
