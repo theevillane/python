@@ -91,6 +91,14 @@ def login_user(users, admin_users):
         print("Invalid username or password. Please try again.")
         return None, None
 
+def confirm_exit():
+    """Confirm if the user wants to exit the program."""
+    confirm = input("Are you sure you want to exit? yes/no: ").strip().lower()
+    if confirm == 'yes':
+        print("Exiting the Program.")
+        return True
+    return False
+
 def record_attendance(users, admin_users):
     """Main function to handle the attendance system."""
     attendance_list = []
@@ -168,12 +176,8 @@ def record_attendance(users, admin_users):
                     print("Invalid option. Please choose a valid number.")
 
         elif user_choice == '3':
-            def confirm_exit():
-                confirm_exit = input("Are you sure you want to exit? yes/no: ").strip().lower()
-                if confirm_exit == 'yes':
-                    print("Exiting the Program")
-                    return True
-                return False
+            if confirm_exit():
+                break
                
 
         else:
