@@ -81,6 +81,10 @@ def login_user(users, admin_users):
     password = getpass("Enter your password: ")
     hashed_password = hash_password(password)
 
+    #Debug stattements
+    print(f"Debug: Attempting login for username='{username}'")
+    print(f"Debug: Entered password hash='{hashed_password}'")
+
     if username in users and users[username] == hashed_password:
         print(f"Welcome, {username}!")
         return username, False
@@ -111,15 +115,15 @@ def record_attendance(users, admin_users):
 
         if user_choice == '1':
             register_user(users, admin_users)
-        
+
         elif user_choice == '2':
             username, is_admin = login_user(users, admin_users)
             if username is None:
                 continue
 
-            
-            #additional debug statements
-            print(f"Debug: Logged in user= '{username}', is_admin ={is_admin}")
+            # Additional debug statements
+            print(f"Debug: Logged in user='{username}', is_admin={is_admin}")
+
             while True:
                 print("\nAttendance Menu")
                 print("1. Add Your Name (Student)")
@@ -135,7 +139,7 @@ def record_attendance(users, admin_users):
                 if menu_choice == '1':
                     print(f"Debug: is_admin = {is_admin}")
                     if is_admin:
-                        print("Error admins cannot add their name to the attendance list")
+                        print("Error: Admins cannot add their name to the attendance list.")
                     else:
                         name = username.upper()
                         if name in map(str.upper, attendance_list):
@@ -172,10 +176,10 @@ def record_attendance(users, admin_users):
                     save_attendance_to_mongo(attendance_list, username)
 
                 elif menu_choice == '6':
-                    confirm_logout = input("Are you sure you want to logout? yes/no: ")
+                    confirm_logout = input("Are you sure you want to logout? yes/no: ").strip().lower()
                     if confirm_logout == 'yes':
-                         print("Logging out.")
-                         break
+                        print("Logging out.")
+                        break
                     else:
                         print("Logout cancelled.")
 
@@ -185,10 +189,10 @@ def record_attendance(users, admin_users):
         elif user_choice == '3':
             if confirm_exit():
                 break
-               
 
         else:
             print("Invalid option. Please choose a number between 1 and 3.")
+
 
 # Set up environment and initialize the attendance system
 os.environ["MONGO_URI"] = "mongodb://localhost:27017/"  # Set MongoDB URI in environment variable
