@@ -71,9 +71,11 @@ def register_user(users, admin_users):
             
         admin_users[username] = hash_password(password)
         print("Admin registration successful!")
+        print(f"Debug: admin_users = {admin_users}")
     else:
         users[username] = hash_password(password)
         print("User registration successful!")
+        print(f"Debug: users = {users}")
 
 def login_user(users, admin_users):
     """Log in a user and return username and role."""
@@ -90,6 +92,7 @@ def login_user(users, admin_users):
         return username, False
     elif username in admin_users and admin_users[username] == hashed_password:
         print(f"Welcome, Admin {username}!")
+        print(f"Debug: admin_users = {admin_users}")
         return username, True
     else:
         print("Invalid username or password. Please try again.")
