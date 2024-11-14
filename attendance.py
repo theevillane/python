@@ -56,6 +56,7 @@ def register_user(users, admin_users):
         print("Username already exists. Try a different one.")
         return
 
+    #check on password strength
     password = getpass("Enter a password: ")
     if not is_strong_password(password):
         print("Password is weak. Please choose a stronger password.")
