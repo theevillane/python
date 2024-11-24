@@ -3,6 +3,7 @@ import re
 from pymongo import MongoClient
 from getpass import getpass
 import os
+import logging
 
 def hash_password(password):
     """Hash a password for secure storage."""
@@ -47,6 +48,12 @@ def save_attendance_to_mongo(attendance_list, username):
     else:
          print("Could not save to MongoDB. Check connection.")
 
+logging.basicConfig(
+    filename='app_debug.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
 def register_user(users, admin_users):
     """Register a new user with role and password validation."""
     ADMIN_CONFIRM_PASSWORD_HASH = hash_password(os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo")) #Admin confirmation password for added security
@@ -72,11 +79,12 @@ def register_user(users, admin_users):
             
         admin_users[username] = hash_password(password)
         print("Admin registration successful!")
-        print(f"Debug: admin_users = {admin_users}")
+        logging.debug(f"Debug: admin_users = {admin_users}")
     else:
         users[username] = hash_password(password)
         print("User registration successful!")
         print(f"Debug: users = {users}")
+
 
 def login_user(users, admin_users):
     """Log in a user and return username and role."""
@@ -84,16 +92,15 @@ def login_user(users, admin_users):
     password = getpass("Enter your password: ")
     hashed_password = hash_password(password)
 
-    #Debug stattements
-    print(f"Debug: Attempting login for username='{username}'")
-    print(f"Debug: Entered password hash='{hashed_password}'")
+    logging.debug(f"Attempting login for username='{username}")
+    logging.debug(f"Debug: Entered password hash='{hashed_password}'")
 
     if username in users and users[username] == hashed_password:
         print(f"Welcome, {username}!")
         return username, False
     elif username in admin_users and admin_users[username] == hashed_password:
         print(f"Welcome, Admin {username}!")
-        print(f"Debug: admin_users = {admin_users}")
+        logging.debug(f"Debug: admin_users = {admin_users}")
         return username, True
     else:
         print("Invalid username or password. Please try again.")
