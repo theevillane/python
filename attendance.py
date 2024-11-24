@@ -1,6 +1,6 @@
 import hashlib
 import re
-from pymongo import MongoClient
+from openpyxl import workbook, load_workbook
 from getpass import getpass
 import os
 import logging
@@ -10,6 +10,25 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+
+def initialize_excel():
+    """Create excel file with the necessary sheets and headers."""
+    if not os.path.exists("attendance_db.xlsx"):
+        wb = workbook()
+
+
+        #user sheet
+        users_sheet = wb.active
+        users_sheet.title = "Users"
+        users_sheet.append(["Username", "Password", "Role"]) 
+
+        #Attendance sheet
+        attendance_list = wb.create_sheet("Attendance")
+        attendance_list.append(["Username", "Attendance"])
+
+        wb.save("attendance_db.xlsx")
+        print("Excel db initializeed.")
+    
 
 def hash_password(password):
     """Hash a password for secure storage."""
@@ -27,32 +46,65 @@ def is_strong_password(password):
         return False
     return True
 
-def connect_to_mongo():
-    """Connect to the MongoDB database with error handling."""
+def save_attendance_to_excel(attendance_list, username):
+    """Save or update the attendance list to excel file."""
     try:
-        client = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017/"))  # Use environment variable for MongoDB URI
-        print("Connected to MongoDB.")
-        return client["attendance_db"]  # Replace with your database name
+        wb = load_workbook("attendance_db.xlsx")
+        sheet = wb["Attendance"]
+        for student in attendance_list:
+            if student not in [row[0] for row in sheet.iter_rows(min_row=2, values_only=True)]:
+                sheet.append([student, "Present"])
+        wb.save("attendce_db.xlsx")
+        print("Attendance list saved to excel")
     except Exception as e:
-        print(f"Failed to connect to MongoDB: {e}")
+        print(f"Error saving attendnace: {e}")
+
+def validate_login(username, hashed_password):
+    """Validate a user's login credentials from the Excel file."""
+    try:
+        wb = load_workbook("attendance_db.xlsx")
+        sheet = wb["Users"]
+        
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            if row[0].lower() == username.lower() and row[1] == hashed_password:
+                return row[2]  # Return the role ('admin' or 'user')
+        return None
+    except Exception as e:
+        print(f"Error validating login: {e}")
         return None
 
-def save_attendance_to_mongo(attendance_list, username):
-    """Save or update the attendance list to MongoDB."""
-    db = connect_to_mongo()
-    if db:
-        try:
-            collection = db["attendance"]  # Replace with your collection name
-            attendance_entry = {
-                "username": username,
-                "attendance": attendance_list
-            }
-            collection.update_one({"username": username}, {"$set": attendance_entry}, upsert=True)
-            print("Attendance list has been saved or updated in MongoDB.")
-        except Exception as e:
-            print(f"Failed to save attendance: {e}")
-    else:
-         print("Could not save to MongoDB. Check connection.")
+
+def add_user_to_excel(username, hashed_password, role):
+    """Add a new user to the Users sheet in Excel."""
+    try:
+        wb = load_workbook("attendance_db.xlsx")
+        sheet = wb["Users"]
+        
+        # Check if the user already exists
+        if username.lower() in [row[0].lower() for row in sheet.iter_rows(min_row=2, values_only=True)]:
+            print("Username already exists. Try a different one.")
+            return
+        
+        # Add the user
+        sheet.append([username, hashed_password, role])
+        wb.save("attendance_db.xlsx")
+        print(f"User '{username}' added successfully.")
+    except Exception as e:
+        print(f"Error adding user: {e}")
+
+
+def view_attendance_from_excel():
+    """Display the attendance list from Excel."""
+    try:
+        wb = load_workbook("attendance_db.xlsx")
+        sheet = wb["Attendance"]
+        print("\nAttendance List:")
+        for idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=1):
+            print(f"{idx}. {row[0]} - {row[1]}")
+    except Exception as e:
+        print(f"Error viewing attendance: {e}")
+
+
 
 def register_user(users, admin_users):
     """Register a new user with role and password validation."""
@@ -70,6 +122,10 @@ def register_user(users, admin_users):
         return
     
     is_admin = input("Is this user an admin? (yes/no): ").strip().lower() == 'yes'
+    hashed_password = hash_password(password)
+    role = "admin" if is_admin else users
+    add_user_to_excel(username, hashed_password, role)
+
     #hashed_password = hash_password(password)
     if is_admin:
         confirm_admin_password = getpass("Enter the admin confirmation password: ")
@@ -92,18 +148,16 @@ def login_user(users, admin_users):
     password = getpass("Enter your password: ")
     hashed_password = hash_password(password)
 
+    role = validate_login(username, hashed_password)
+
     logging.debug(f"Attempting login for username='{username}")
     logging.debug(f"Debug: Entered password hash='{hashed_password}'")
 
-    if username in users and users[username] == hashed_password:
+    if role:
         print(f"Welcome, {username}!")
-        return username, False
-    elif username in admin_users and admin_users[username] == hashed_password:
-        print(f"Welcome, Admin {username}!")
-        logging.debug(f"Debug: admin_users = {admin_users}")
-        return username, True
+        return username, role == "admin"
     else:
-        print("Invalid username or password. Please try again.")
+        print("Invalid username or password.")
         return None, None
 
 def confirm_exit():
@@ -122,9 +176,10 @@ def record_attendance(users, admin_users):
         print()
         print("Welcome to our class today.")
         print("Make sure you login to the class and add your name to the attendance list.")
-        print("\n1. Sign Up")
+        print("\n1. Register User")
         print("2. Login")
-        print("3. Exit")
+        print("3. View Attendance")
+        print("4. Exit")
         user_choice = input("Choose an option (1-3): ")
 
         if user_choice == '1':
@@ -187,7 +242,7 @@ def record_attendance(users, admin_users):
                         print("No students have attended yet.")
 
                 elif menu_choice == '5':
-                    save_attendance_to_mongo(attendance_list, username)
+                    save_attendance_to_excel(attendance_list, username)
 
                 elif menu_choice == '6':
                     confirm_logout = input("Are you sure you want to logout? yes/no: ").strip().lower()
@@ -201,6 +256,9 @@ def record_attendance(users, admin_users):
                     print("Invalid option. Please choose a valid number.")
 
         elif user_choice == '3':
+            view_attendance_from_excel()
+
+        elif user_choice == '4':
             if confirm_exit():
                 break
 
