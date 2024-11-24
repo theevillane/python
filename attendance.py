@@ -5,6 +5,12 @@ from getpass import getpass
 import os
 import logging
 
+logging.basicConfig(
+    filename='app_debug.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
 def hash_password(password):
     """Hash a password for secure storage."""
     return hashlib.sha256(password.encode()).hexdigest()
@@ -47,12 +53,6 @@ def save_attendance_to_mongo(attendance_list, username):
             print(f"Failed to save attendance: {e}")
     else:
          print("Could not save to MongoDB. Check connection.")
-
-logging.basicConfig(
-    filename='app_debug.log',
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 
 def register_user(users, admin_users):
     """Register a new user with role and password validation."""
