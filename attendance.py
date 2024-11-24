@@ -112,6 +112,9 @@ def record_attendance(users, admin_users):
     attendance_list = []
 
     while True:
+        print()
+        print("Welcome to our class today.")
+        print("Make sure you login to the class and add your name to the attendance list.")
         print("\n1. Sign Up")
         print("2. Login")
         print("3. Exit")
