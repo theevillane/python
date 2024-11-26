@@ -1,9 +1,11 @@
 import hashlib
 import re
-from openpyxl import workbook, load_workbook
+from openpyxl import Workbook, load_workbook
 from getpass import getpass
 import os
 import logging
+import time
+
 
 logging.basicConfig(
     filename='app_debug.log',
@@ -14,21 +16,19 @@ logging.basicConfig(
 def initialize_excel():
     """Create excel file with the necessary sheets and headers."""
     if not os.path.exists("attendance_db.xlsx"):
-        wb = workbook()
+        wb = Workbook()
 
-
-        #user sheet
+        # User sheet
         users_sheet = wb.active
         users_sheet.title = "Users"
-        users_sheet.append(["Username", "Password", "Role"]) 
+        users_sheet.append(["Username", "Password", "Role"])
 
-        #Attendance sheet
+        # Attendance sheet
         attendance_list = wb.create_sheet("Attendance")
         attendance_list.append(["Username", "Attendance"])
 
         wb.save("attendance_db.xlsx")
-        print("Excel db initializeed.")
-    
+        print("Excel db initialized.")
 
 def hash_password(password):
     """Hash a password for secure storage."""
@@ -52,46 +52,67 @@ def save_attendance_to_excel(attendance_list, username):
         wb = load_workbook("attendance_db.xlsx")
         sheet = wb["Attendance"]
         for student in attendance_list:
-            if student not in [row[0] for row in sheet.iter_rows(min_row=2, values_only=True)]:
+            found = False
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                if student == row[0]:
+                    found = True
+                    break
+            if not found:
                 sheet.append([student, "Present"])
-        wb.save("attendce_db.xlsx")
+        wb.save("attendance_db.xlsx")
         print("Attendance list saved to excel")
     except Exception as e:
-        print(f"Error saving attendnace: {e}")
+        print(f"Error saving attendance: {e}")
+
+def get_user_role(username):
+    """Retrieve the role of a user from the excel sheet."""
+    try:
+        wb = load_workbook("attendance_db.xlsx")
+        sheet = wb["Users"]
+
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            print(f"Checking row: {row}")
+            if row[0].lower() == username.lower() and row[1] == hash_password:
+                return row[2]
+        return None
+    except Exception as e:
+        print(f"Error retrieving user role: {e}")
+        return None
 
 def validate_login(username, hashed_password):
     """Validate a user's login credentials from the Excel file."""
     try:
         wb = load_workbook("attendance_db.xlsx")
         sheet = wb["Users"]
-        
+
         for row in sheet.iter_rows(min_row=2, values_only=True):
+            print(f"Checking row: username={row[0]}, Hashed Password={row[1]}, Role={[2]}")
             if row[0].lower() == username.lower() and row[1] == hashed_password:
                 return row[2]  # Return the role ('admin' or 'user')
+        print("Login failed. Username or password mismatch")
         return None
     except Exception as e:
         print(f"Error validating login: {e}")
         return None
-
 
 def add_user_to_excel(username, hashed_password, role):
     """Add a new user to the Users sheet in Excel."""
     try:
         wb = load_workbook("attendance_db.xlsx")
         sheet = wb["Users"]
-        
+
         # Check if the user already exists
-        if username.lower() in [row[0].lower() for row in sheet.iter_rows(min_row=2, values_only=True)]:
-            print("Username already exists. Try a different one.")
-            return
-        
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            if row[0].lower() == username.lower():
+                print("Username already exists. Try a different one.")
+                return
+
         # Add the user
         sheet.append([username, hashed_password, role])
         wb.save("attendance_db.xlsx")
         print(f"User '{username}' added successfully.")
     except Exception as e:
         print(f"Error adding user: {e}")
-
 
 def view_attendance_from_excel():
     """Display the attendance list from Excel."""
@@ -104,43 +125,37 @@ def view_attendance_from_excel():
     except Exception as e:
         print(f"Error viewing attendance: {e}")
 
-
-
 def register_user(users, admin_users):
     """Register a new user with role and password validation."""
-    ADMIN_CONFIRM_PASSWORD_HASH = hash_password(os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo")) #Admin confirmation password for added security
+    ADMIN_CONFIRM_PASSWORD_HASH = hash_password(os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo"))  # Admin confirmation password for added security
 
     username = input("Enter a username: ").lower()
     if username in users or username in admin_users:
         print("Username already exists. Try a different one.")
         return
 
-    #check on password strength
+    # Check password strength
     password = getpass("Enter a password: ")
     if not is_strong_password(password):
         print("Password is weak. Please choose a stronger password.")
         return
-    
+
     is_admin = input("Is this user an admin? (yes/no): ").strip().lower() == 'yes'
     hashed_password = hash_password(password)
-    role = "admin" if is_admin else users
+    role = "admin" if is_admin else "user"
     add_user_to_excel(username, hashed_password, role)
 
-    #hashed_password = hash_password(password)
     if is_admin:
         confirm_admin_password = getpass("Enter the admin confirmation password: ")
         if hash_password(confirm_admin_password) != ADMIN_CONFIRM_PASSWORD_HASH:
             print("Admin confirmation password is incorrect. Registration failed.")
             return
-            
+
         admin_users[username] = hash_password(password)
         print("Admin registration successful!")
-        logging.debug(f"Debug: admin_users = {admin_users}")
     else:
         users[username] = hash_password(password)
         print("User registration successful!")
-        print(f"Debug: users = {users}")
-
 
 def login_user(users, admin_users):
     """Log in a user and return username and role."""
@@ -150,12 +165,9 @@ def login_user(users, admin_users):
 
     role = validate_login(username, hashed_password)
 
-    logging.debug(f"User '{username}' is being registered. Is Admin:{is_admin}")
-    logging.debug(f"Login attempt: username='{username}' hashed_password='{hashed_password}'")
-
     if role:
-        print(f"Welcome, {username}!")
-        return username, role == "admin"
+        print(f"Welcome, {username}! Your role is '{role}'")
+        return username, role
     else:
         print("Invalid username or password.")
         return None, None
@@ -174,86 +186,83 @@ def record_attendance(users, admin_users):
 
     while True:
         print()
+        local_time = time.localtime()
+        print(f"It is {local_time.tm_year}, {local_time.tm_mon}, {local_time.tm_mday}   Time:{local_time.tm_hour}:{local_time.tm_min}:{local_time.tm_sec}")
         print("Welcome to our class today.")
         print("Make sure you login to the class and add your name to the attendance list.")
         print("\n1. Register User")
         print("2. Login")
         print("3. View Attendance")
         print("4. Exit")
-        user_choice = input("Choose an option (1-3): ")
+        user_choice = input("Choose an option (1-4): ")
 
         if user_choice == '1':
             register_user(users, admin_users)
 
         elif user_choice == '2':
-            username, is_admin = login_user(users, admin_users)
-            if username is None:
-                continue
-
-            # Additional debug statements
-            print(f"Debug: Logged in user='{username}', is_admin={is_admin}")
-
-            while True:
-                print("\nAttendance Menu")
-                print("1. Add Your Name (Student)")
-                if is_admin:
-                    print("2. Add Student (Admin Only)")
-                    print("3. Delete Student")
-                print("4. View Attendance List")
-                print("5. Save Attendance to MongoDB")
-                print("6. Log Out")
-
-                menu_choice = input("Choose an option: ")
-
-                if menu_choice == '1':
-                    print(f"Debug: is_admin = {is_admin}")
+            username, role = login_user(users, admin_users)
+            if role:
+                is_admin = (role == "admin")
+                while True:
+                    print("\nAttendance Menu")
+                    print("1. Add Your Name (Student)")
                     if is_admin:
-                        print("Error: Admins cannot add their name to the attendance list.")
-                    else:
-                        name = username.upper()
+                        print("2. Add Student (Admin Only)")
+                        print("3. Delete Student")
+                    print("4. View Attendance List")
+                    print("5. Save Attendance")
+                    print("6. Log Out")
+
+                    menu_choice = input("Choose an option: ")
+
+                    if menu_choice == '1':
+                        if is_admin:
+                            print("Error: Admins cannot add their name to the attendance list.")
+                        else:
+                            name = username.upper()
+                            if name in map(str.upper, attendance_list):
+                                print(f"{name} is already in the attendance list.")
+                            else:
+                                attendance_list.append(name)
+                                print(f"{name} has been added to the attendance list.")
+
+                    elif menu_choice == '2' and is_admin:
+                        name = input("Enter the student's name to add: ").upper()
                         if name in map(str.upper, attendance_list):
                             print(f"{name} is already in the attendance list.")
                         else:
                             attendance_list.append(name)
                             print(f"{name} has been added to the attendance list.")
 
-                elif menu_choice == '2' and is_admin:
-                    name = input("Enter the student's name to add: ").upper()
-                    if name in map(str.upper, attendance_list):
-                        print(f"{name} is already in the attendance list.")
+                    elif menu_choice == '3' and is_admin:
+                        name = input("Enter the student's name to delete: ").upper()
+                        if name in attendance_list:
+                            attendance_list.remove(name)
+                            print(f"{name} has been deleted from the attendance list.")
+                        else:
+                            print(f"{name} is not in the attendance list.")
+
+                    elif menu_choice == '4':
+                        if attendance_list:
+                            print("\nAttendance List:")
+                            for idx, student in enumerate(attendance_list, start=1):
+                                print(f"{idx}. {student}")
+                        else:
+                            print("No students have attended yet.")
+
+                    elif menu_choice == '5':
+                        save_attendance_to_excel(attendance_list, username)
+
+                    elif menu_choice == '6':
+                        confirm_logout = input("Are you sure you want to logout? yes/no: ").strip().lower()
+                        if confirm_logout == 'yes':
+                            print("Logging out.")
+                            break
+                        else:
+                            print("Logout cancelled.")
+
                     else:
-                        attendance_list.append(name)
-                        print(f"{name} has been added to the attendance list.")
-
-                elif menu_choice == '3' and is_admin:
-                    name = input("Enter the student's name to delete: ").upper()
-                    if name in attendance_list:
-                        attendance_list.remove(name)
-                        print(f"{name} has been deleted from the attendance list.")
-                    else:
-                        print(f"{name} is not in the attendance list.")
-
-                elif menu_choice == '4':
-                    if attendance_list:
-                        print("\nAttendance List:")
-                        for idx, student in enumerate(attendance_list, start=1):
-                            print(f"{idx}. {student}")
-                    else:
-                        print("No students have attended yet.")
-
-                elif menu_choice == '5':
-                    save_attendance_to_excel(attendance_list, username)
-
-                elif menu_choice == '6':
-                    confirm_logout = input("Are you sure you want to logout? yes/no: ").strip().lower()
-                    if confirm_logout == 'yes':
-                        print("Logging out.")
-                        break
-                    else:
-                        print("Logout cancelled.")
-
-                else:
-                    print("Invalid option. Please choose a valid number.")
+                        print("Invalid option. Please choose a valid number.")
 
         elif user_choice == '3':
             view_attendance_from_excel()
@@ -263,11 +272,8 @@ def record_attendance(users, admin_users):
                 break
 
         else:
-            print("Invalid option. Please choose a number between 1 and 3.")
+            print("Invalid option. Please choose a number between 1 and 4.")
 
-
-# Set up environment and initialize the attendance system
-os.environ["MONGO_URI"] = "mongodb://localhost:27017/"  # Set MongoDB URI in environment variable
 users = {}  # Dictionary to store usernames and hashed passwords
 admin_users = {}  # Dictionary for admin users
 
