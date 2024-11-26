@@ -106,10 +106,11 @@ def validate_login(username, hashed_password):
         sheet = wb["Users"]
 
         for row in sheet.iter_rows(min_row=2, values_only=True):
-            print(f"Checking row: username={row[0]}, Hashed Password={row[1]}, Role={row[2]}")
+            print(f"Checking row: username={row[0]}, stored_hashed_password={row[1]}, role={row[2]}")
             if row[0].lower() == username.lower() and row[1] == hashed_password:
+                print(f"Match found: {row}")
                 return row[2]  # Return the role ('admin' or 'user')
-        print("Login failed. Username or password mismatch")
+        print("Login failed. Username or password mismatch.")
         return None
     except Exception as e:
         print(f"Error validating login: {e}")
