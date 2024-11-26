@@ -150,9 +150,6 @@ def login_user(users, admin_users):
 
     role = validate_login(username, hashed_password)
 
-    logging.debug(f"User '{username}' is being registered. Is Admin:{is_admin}")
-    logging.debug(f"Login attempt: username='{username}' hashed_password='{hashed_password}'")
-
     if role:
         print(f"Welcome, {username}!")
         return username, role == "admin"
