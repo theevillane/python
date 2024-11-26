@@ -182,7 +182,7 @@ def login_user(users, admin_users):
     """Log in a user and return username and role."""
     username = input("Enter your username: ").lower()
     password = getpass("Enter your password: ")
-    hashed_password = hash_password(password)
+    hashed_password = hash_password(password)  # Ensure password is hashed before validation
 
     role = validate_login(username, hashed_password)
 
@@ -192,6 +192,7 @@ def login_user(users, admin_users):
     else:
         print("Invalid username or password.")
         return None, None
+
 
 def confirm_exit():
     """Confirm if the user wants to exit the program."""
