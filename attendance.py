@@ -59,15 +59,17 @@ def save_attendance_to_excel(attendance_list, username):
     except Exception as e:
         print(f"Error saving attendnace: {e}")
 
-def validate_login(username, hashed_password):
+ef validate_login(username, hashed_password):
     """Validate a user's login credentials from the Excel file."""
     try:
         wb = load_workbook("attendance_db.xlsx")
         sheet = wb["Users"]
-        
+
         for row in sheet.iter_rows(min_row=2, values_only=True):
+            print(f"Checking row: username={row[0]}, Hashed Password={row[1]}, Role={row[2]}")
             if row[0].lower() == username.lower() and row[1] == hashed_password:
                 return row[2]  # Return the role ('admin' or 'user')
+        print("Login failed. Username or password mismatch")
         return None
     except Exception as e:
         print(f"Error validating login: {e}")
