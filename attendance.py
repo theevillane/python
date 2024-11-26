@@ -7,6 +7,7 @@ import logging
 import time
 
 
+
 logging.basicConfig(
     filename='app_debug.log',
     level=logging.DEBUG,
@@ -64,19 +65,20 @@ def save_attendance_to_excel(attendance_list, username):
     except Exception as e:
         print(f"Error saving attendance: {e}")
 
-def get_user_role(username):
-    """Retrieve the role of a user from the excel sheet."""
+
+
+def get_user_role(username, hashed_password):
+    """Retrieve the role of a user based on username and hashed password."""
     try:
         wb = load_workbook("attendance_db.xlsx")
         sheet = wb["Users"]
 
         for row in sheet.iter_rows(min_row=2, values_only=True):
-            print(f"Checking row: {row}")
-            if row[0].lower() == username.lower() and row[1] == hash_password:
-                return row[2]
+            if row[0].lower() == username.lower() and row[1] == hashed_password:
+                return row[2]  # Return role (e.g., 'admin' or 'user')
         return None
     except Exception as e:
-        print(f"Error retrieving user role: {e}")
+        logging.error(f"Error retrieving user role: {e}")
         return None
 
 def validate_login(username, hashed_password):
@@ -180,6 +182,7 @@ def confirm_exit():
         return True
     return False
 
+
 def record_attendance(users, admin_users):
     """Main function to handle the attendance system."""
     attendance_list = []
@@ -273,6 +276,10 @@ def record_attendance(users, admin_users):
 
         else:
             print("Invalid option. Please choose a number between 1 and 4.")
+
+if __name__ == "__main__":
+    initialize_excel()  # Ensure the database file exists
+    record_attendance({}, {})  # Start the program
 
 users = {}  # Dictionary to store usernames and hashed passwords
 admin_users = {}  # Dictionary for admin users

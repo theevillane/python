@@ -28,8 +28,7 @@ def home():
         elif 'delete_student' in request.form:
             password = request.form['admin_password']
             name = request.form['student_to_delete']
-            if password in admin_passwords:
-                if name in attendance_list:
+            if password in admin_passwords and name in attendance_list:
                     attendance_list.remove(name)
                     flash(f"{name} has been deleted from the attendance list.")
                 else:
