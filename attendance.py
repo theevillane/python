@@ -47,6 +47,24 @@ def is_strong_password(password):
         return False
     return True
 
+def add_to_attendance_list(username, attendance_list):
+    """Add a username to the attendance list."""
+    name = username.upper()
+    if name in map(str.upper, attendance_list):
+        print(f"{name} is already in the attendance list.")
+    else:
+        attendance_list.append(name)
+        print(f"{name} has been added to the attendance list.")
+
+def remove_from_attendance_list(name, attendance_list):
+    """Remove a name from the attendance list."""
+    if name in map(str.upper, attendance_list):
+        attendance_list.remove(name.upper())
+        print(f"{name} has been removed from the attendance list.")
+    else:
+        print(f"{name} is not in the attendance list.")
+
+
 def save_attendance_to_excel(attendance_list, username):
     """Save or update the attendance list to excel file."""
     try:
