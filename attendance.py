@@ -200,7 +200,6 @@ def confirm_exit():
     if confirm == 'yes':
         print("Exiting the Program.")
         return True
-    return False
 
 
 def record_attendance(users, admin_users):
@@ -298,8 +297,8 @@ def record_attendance(users, admin_users):
             print("Invalid option. Please choose a number between 1 and 4.")
 
 if __name__ == "__main__":
-    initialize_excel()  # Ensure the database file exists
-    record_attendance({}, {})  # Start the program
+    initialize_excel()  
+    record_attendance({}, {})  
 
 users = {}  # Dictionary to store usernames and hashed passwords
 admin_users = {}  # Dictionary for admin users
