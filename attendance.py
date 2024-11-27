@@ -106,9 +106,9 @@ def validate_login(username, hashed_password):
         sheet = wb["Users"]
 
         for row in sheet.iter_rows(min_row=2, values_only=True):
-            print(f"Checking row: username={row[0]}, stored_hashed_password={row[1]}, role={row[2]}")
+            logging.debug(f"Checking row: username={row[0]}, stored_hashed_password={row[1]}, role={row[2]}")
             if row[0].lower() == username.lower() and row[1] == hashed_password:
-                print(f"Match found: {row}")
+                logging.debug(f"Match found: {row}")
                 return row[2]  # Return the role ('admin' or 'user')
         print("Login failed. Username or password mismatch.")
         return None
@@ -187,7 +187,7 @@ def login_user(users, admin_users):
     role = validate_login(username, hashed_password)
 
     if role:
-        print(f"Welcome, {username}! Your role is '{role}'")
+        print(f"Welcome, {username}! You are a {role}")
         return username, role
     else:
         print("Invalid username or password.")
@@ -200,7 +200,6 @@ def confirm_exit():
     if confirm == 'yes':
         print("Exiting the Program.")
         return True
-    return False
 
 
 def record_attendance(users, admin_users):
@@ -298,8 +297,8 @@ def record_attendance(users, admin_users):
             print("Invalid option. Please choose a number between 1 and 4.")
 
 if __name__ == "__main__":
-    initialize_excel()  # Ensure the database file exists
-    record_attendance({}, {})  # Start the program
+    initialize_excel()  
+    record_attendance({}, {})  
 
 users = {}  # Dictionary to store usernames and hashed passwords
 admin_users = {}  # Dictionary for admin users
