@@ -187,7 +187,7 @@ def login_user(users, admin_users):
     role = validate_login(username, hashed_password)
 
     if role:
-        print(f"Welcome, {username}! You are a '{role}'")
+        print(f"Welcome, {username}! You are a {role}")
         return username, role
     else:
         print("Invalid username or password.")
