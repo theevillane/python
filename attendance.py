@@ -261,8 +261,8 @@ def record_attendance(users, admin_users):
         print("2. Login")
         print("3. View Attendance")
         print("4. Reset Password")
-        print("5.Exit")
-        user_choice = input("Choose an option (1-4): ")
+        print("5. Exit")
+        user_choice = input("Choose an option (1-5): ")
 
         if user_choice == '1':
             register_user(users, admin_users)
