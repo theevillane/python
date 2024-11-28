@@ -260,7 +260,8 @@ def record_attendance(users, admin_users):
         print("\n1. Register User")
         print("2. Login")
         print("3. View Attendance")
-        print("4. Exit")
+        print("4. Reset Password")
+        print("5.Exit")
         user_choice = input("Choose an option (1-4): ")
 
         if user_choice == '1':
@@ -328,8 +329,11 @@ def record_attendance(users, admin_users):
 
         elif user_choice == '3':
             view_attendance_from_excel()
-
+        
         elif user_choice == '4':
+            reset_password()
+
+        elif user_choice == '5':
             if confirm_exit():
                 break
 
