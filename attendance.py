@@ -255,6 +255,11 @@ def record_attendance(users, admin_users):
                         else:
                             attendance_list.append(name)
                             print(f"{name} has been added to the attendance list.")
+                        
+                        default_password = "Password@123"
+                        hashed_password = hash_password(default_password)
+                        add_user_to_excel(name, hashed_password, "user")
+                        print(f"Student '{name}' has also been added to users sheet with a default password.")
 
                     elif menu_choice == '3' and is_admin:
                         name = input("Enter the student's name to delete: ").upper()
@@ -266,7 +271,7 @@ def record_attendance(users, admin_users):
 
                     elif menu_choice == '4':
                         view_attendance_from_excel()
-                        
+
                     elif menu_choice == '5':
                         save_attendance_to_excel(attendance_list, username)
 
