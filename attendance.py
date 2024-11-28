@@ -49,12 +49,18 @@ def is_strong_password(password):
 
 def add_to_attendance_list(username, attendance_list):
     """Add a username to the attendance list."""
+    name = input("Enter the student's name to add: ").upper()
+
     name = username.upper()
     if name in map(str.upper, attendance_list):
         print(f"{name} is already in the attendance list.")
     else:
         attendance_list.append(name)
         print(f"{name} has been added to the attendance list.")
+    default_password = "Password@123"
+    hashed_password = hash_password(default_password)
+    add_user_to_excel(name, hashed_password, "user")
+    print(f"Student '{name}' has also been added to users sheet with a default password.")
 
 def remove_from_attendance_list(attendance_list):
     """Remove a name from the attendance list."""
@@ -295,17 +301,7 @@ def record_attendance(users, admin_users):
                                 print(f"{name} has been added to the attendance list.")
 
                     elif menu_choice == '2' and is_admin:
-                        name = input("Enter the student's name to add: ").upper()
-                        if name in map(str.upper, attendance_list):
-                            print(f"{name} is already in the attendance list.")
-                        else:
-                            attendance_list.append(name)
-                            print(f"{name} has been added to the attendance list.")
-                        
-                        default_password = "Password@123"
-                        hashed_password = hash_password(default_password)
-                        add_user_to_excel(name, hashed_password, "user")
-                        print(f"Student '{name}' has also been added to users sheet with a default password.")
+                        add_to_attendance_list(attendance_list)
 
                     elif menu_choice == '3' and is_admin:
                         remove_from_attendance_list(attendance_list)
