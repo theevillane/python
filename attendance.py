@@ -265,13 +265,8 @@ def record_attendance(users, admin_users):
                             print(f"{name} is not in the attendance list.")
 
                     elif menu_choice == '4':
-                        if attendance_list:
-                            print("\nAttendance List:")
-                            for idx, student in enumerate(attendance_list, start=1):
-                                print(f"{idx}. {student}")
-                        else:
-                            print("No students have attended yet.")
-
+                        view_attendance_from_excel()
+                        
                     elif menu_choice == '5':
                         save_attendance_to_excel(attendance_list, username)
 
