@@ -56,10 +56,12 @@ def add_to_attendance_list(username, attendance_list):
         attendance_list.append(name)
         print(f"{name} has been added to the attendance list.")
 
-def remove_from_attendance_list(name, attendance_list):
+def remove_from_attendance_list(attendance_list):
     """Remove a name from the attendance list."""
+    name = input("Enter the student's name to delete: ").upper()
+
     if name in map(str.upper, attendance_list):
-        attendance_list.remove(name.upper())
+        attendance_list.remove(name)
         print(f"{name} has been removed from the attendance list.")
     else:
         print(f"{name} is not in the attendance list.")
@@ -181,13 +183,15 @@ def register_user(users, admin_users):
 def login_user(users, admin_users):
     """Log in a user and return username and role."""
     username = input("Enter your username: ").lower()
+    if username in users or username in admin_users:
+        print("User already exixst. Try a different one.")
     password = getpass("Enter your password: ")
     hashed_password = hash_password(password)  # Ensure password is hashed before validation
 
     role = validate_login(username, hashed_password)
 
     if role:
-        print(f"Welcome, {username}! You are a {role}")
+        print(f"Welcome, {username}! You are an {role}")
         return username, role
     else:
         print("Invalid username or password.")
@@ -262,12 +266,7 @@ def record_attendance(users, admin_users):
                         print(f"Student '{name}' has also been added to users sheet with a default password.")
 
                     elif menu_choice == '3' and is_admin:
-                        name = input("Enter the student's name to delete: ").upper()
-                        if name in attendance_list:
-                            attendance_list.remove(name)
-                            print(f"{name} has been deleted from the attendance list.")
-                        else:
-                            print(f"{name} is not in the attendance list.")
+                        remove_from_attendance_list(attendance_list)
 
                     elif menu_choice == '4':
                         view_attendance_from_excel()
