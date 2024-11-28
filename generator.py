@@ -8,6 +8,7 @@ def construct_sentence(words):
         "The {object} was {verb} by the {subject}.",
         "{subject} quickly {verb} the {object}.",
         "Did the {subject} {verb} the {object}?",
+        "When was the {object} {verb} for {subject}"
     ]
 
     # Basic lists of subjects, verbs, and objects for sentence creation
