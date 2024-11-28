@@ -198,6 +198,47 @@ def login_user(users, admin_users):
         return None, None
 
 
+def reset_password():
+    """Reset a user's password."""
+    try:
+        wb = load_workbook("attendance_db.xlsx")
+        sheet = wb["Users"]
+        
+        username = input("Enter the username for password reset: ").strip().lower()
+        user_found = False
+
+        for row in sheet.iter_rows(min_row=2, max_col=3, values_only=False):
+            if row[0].value.lower() == username:
+                user_found = True
+
+                # If admin is resetting, ask for confirmation
+                is_admin_reset = input("Are you an admin resetting this password? (yes/no): ").strip().lower() == 'yes'
+                if is_admin_reset:
+                    admin_password = getpass("Enter the admin confirmation password: ")
+                    admin_hash = hash_password(os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo"))
+                    if hash_password(admin_password) != admin_hash:
+                        print("Admin confirmation failed. Password reset aborted.")
+                        return
+
+                # Prompt for a new password
+                new_password = getpass("Enter the new password: ")
+                if not is_strong_password(new_password):
+                    print("The password is too weak. Please choose a stronger one.")
+                    return
+
+                # Update the password
+                row[1].value = hash_password(new_password)
+                wb.save("attendance_db.xlsx")
+                print("Password reset successfully.")
+                return
+
+        if not user_found:
+            print("Username not found in the system.")
+    except Exception as e:
+        print(f"Error during password reset: {e}")
+
+
+
 def confirm_exit():
     """Confirm if the user wants to exit the program."""
     confirm = input("Are you sure you want to exit? yes/no: ").strip().lower()
