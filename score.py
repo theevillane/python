@@ -9,7 +9,8 @@ def basketball_score_tracker():
         print("2. Add Three-Point Shot")
         print("3. View Total Score")
         print("4. View Total Shots Made")
-        print("5. Exit")
+        print("5. Bonus points")
+        print("6. Exit")
         
         choice = input("Choose an option (1-5): ")
       #choices 
@@ -28,6 +29,10 @@ def basketball_score_tracker():
         
         elif choice == '4':
             print(f"Total shots made: {total_shots}")
+
+        elif choice = '5':
+            if shot > 3:
+                print("Added ! point")
         
         elif choice == '5':
             print("Exiting the score tracker.")
