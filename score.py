@@ -22,7 +22,8 @@ def basketball_score_tracker():
         elif choice == '2':
             total_score += 3
             total_shots += 1
-            print(f"Three-point shot made!. Total score is{total_score}")
+            print(f"Th
+                  ree-point shot made!. Total score is{total_score}")
         
         elif choice == '3':
             print(f"Total score: {total_score} points")
