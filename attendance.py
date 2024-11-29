@@ -49,10 +49,10 @@ def is_strong_password(password):
 
 def add_to_attendance_list(username, attendance_list):
     """Add a username to the attendance list."""
-    name = input("Enter the student's name to add: ").upper()
+    name = input("Enter the student's name to add: ").strip().upper()
 
     name = username.upper()
-    if name in map(str.upper, attendance_list):
+    if name in attendance_list:
         print(f"{name} is already in the attendance list.")
     else:
         attendance_list.append(name)
@@ -66,7 +66,7 @@ def remove_from_attendance_list(attendance_list):
     """Remove a name from the attendance list."""
     name = input("Enter the student's name to delete: ").upper()
 
-    if name in map(str.upper, attendance_list):
+    if name in attendance_list:
         attendance_list.remove(name)
         print(f"{name} has been removed from the attendance list.")
     else:
@@ -85,7 +85,7 @@ def save_attendance_to_excel(attendance_list, username):
                     found = True
                     break
             if not found:
-                sheet.append([student, "Present"])
+                sheet.append([student])
         wb.save("attendance_db.xlsx")
         print("Attendance list saved to excel")
     except Exception as e:
