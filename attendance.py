@@ -301,7 +301,7 @@ def record_attendance(users, admin_users):
                                 print(f"{name} has been added to the attendance list.")
 
                     elif menu_choice == '2' and is_admin:
-                        add_to_attendance_list(attendance_list)
+                        add_to_attendance_list(username,attendance_list)
 
                     elif menu_choice == '3' and is_admin:
                         remove_from_attendance_list(attendance_list)
