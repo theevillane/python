@@ -13,7 +13,6 @@ def basketball_score_tracker():
         print("6. Exit")
         
         choice = input("Choose an option (1-6): ")
-      #choices 
         if choice == '1':
             total_score += 2
             total_shots += 1
@@ -47,5 +46,4 @@ def basketball_score_tracker():
         else:
            print("Invalid option. Please choose a number between 1 and 6.")
 
-# Run
 basketball_score_tracker()
