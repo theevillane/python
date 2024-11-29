@@ -261,6 +261,7 @@ def record_attendance(users, admin_users):
         print()
         local_time = time.localtime()
         print(f"It is {local_time.tm_year}, {local_time.tm_mon}, {local_time.tm_mday}   Time:{local_time.tm_hour}:{local_time.tm_min}:{local_time.tm_sec}")
+        print()
         print("Welcome to our class today.")
         print("Make sure you login to the class and add your name to the attendance list.")
         print("\n1. Register User")
