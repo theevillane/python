@@ -51,6 +51,7 @@ def add_to_attendance_list(username, attendance_list):
     """Add a username to the attendance list."""
     name = input("Enter the student's name to add: ").strip().upper()
 
+    name = username.upper()
     if name in attendance_list:
         print(f"{name} is already in the attendance list.")
     else:
@@ -191,6 +192,8 @@ def register_user(users, admin_users):
 def login_user(users, admin_users):
     """Log in a user and return username and role."""
     username = input("Enter your username: ").lower()
+    if username in users or username in admin_users:
+        print("User already exixst. Try a different one.")
     password = getpass("Enter your password: ")
     hashed_password = hash_password(password)  # Ensure password is hashed before validation
 
