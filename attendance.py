@@ -51,7 +51,6 @@ def add_to_attendance_list(username, attendance_list):
     """Add a username to the attendance list."""
     name = input("Enter the student's name to add: ").strip().upper()
 
-    name = username.upper()
     if name in attendance_list:
         print(f"{name} is already in the attendance list.")
     else:
