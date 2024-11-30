@@ -168,6 +168,9 @@ def register_user(users, admin_users):
     if not is_strong_password(password):
         print("Password is weak. Please choose a stronger password.")
         return
+    confirm_password = getpass("Re-enter password: ")
+    if confirm_password != password:
+        return
 
     is_admin = input("Is this user an admin? (yes/no): ").strip().lower() == 'yes'
     hashed_password = hash_password(password)
