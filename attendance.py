@@ -289,7 +289,7 @@ def record_attendance(users, admin_users):
                         print("3. Delete Student")
                     print("4. View Attendance List")
                     print("5. Save Attendance")
-                    print("6. Log Out")
+                    print("6. Back to Main Mwnu")
 
                     menu_choice = input("Choose an option: ")
 
