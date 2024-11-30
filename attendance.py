@@ -192,8 +192,6 @@ def register_user(users, admin_users):
 def login_user(users, admin_users):
     """Log in a user and return username and role."""
     username = input("Enter your username: ").lower()
-    if username in users or username in admin_users:
-        print("User already exixst. Try a different one.")
     password = getpass("Enter your password: ")
     hashed_password = hash_password(password)  # Ensure password is hashed before validation
 
