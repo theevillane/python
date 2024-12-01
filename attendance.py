@@ -52,6 +52,18 @@ def is_strong_password(password):
         return False
     return True
 
+def load_sheet(sheet_name):
+    """Load a specific sheet from the excel file."""
+    try:
+        wb = load_workbook(EXCEL_FILE)
+        sheet = wb[sheet_name]
+        return sheet, wb
+    except KeyError:
+        print(f"Sheet '{sheet_name}' not found")
+    except FileNotFoundError:
+        print(f"File '{EXCEL_FILE}' not found.")
+    return None, None
+
 def add_to_attendance_list(username, attendance_list):
     """Add a username to the attendance list."""
     name = input("Enter the student's name to add: ").strip().upper()
