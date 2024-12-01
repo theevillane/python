@@ -346,7 +346,7 @@ if __name__ == "__main__":
     users = {}
     admin_users = {}
 
-   record_attendance(users, admin_users)
+    record_attendance(users, admin_users)
 
 # Run the attendance recorder
 record_attendance(users, admin_users)
