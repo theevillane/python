@@ -14,6 +14,11 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
+
+EXCEL_FILE = "attendance_db.xlsx"
+ADMIN_CONFIRM_PASSWORD = os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo")
+DEFAULT_PASSWORD = "password123"
+
 def initialize_excel():
     """Create excel file with the necessary sheets and headers."""
     if not os.path.exists("attendance_db.xlsx"):
@@ -28,7 +33,7 @@ def initialize_excel():
         attendance_list = wb.create_sheet("Attendance")
         attendance_list.append(["Username", "Attendance"])
 
-        wb.save("attendance_db.xlsx")
+        wb.save(EXCEL_FILE)
         print("Excel db initialized.")
 
 def hash_password(password):
