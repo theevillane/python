@@ -343,7 +343,7 @@ def record_attendance(users, admin_users):
 if __name__ == "__main__":
     initialize_excel()  
 
-   userd = {}
+   users = {}
    admin_users = {}
 
    record_attendance(users, admin_users)
