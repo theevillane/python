@@ -344,8 +344,10 @@ if __name__ == "__main__":
     initialize_excel()  
     record_attendance({}, {})  
 
-users = {}  # Dictionary to store usernames and hashed passwords
-admin_users = {}  # Dictionary for admin users
+   userd = {}
+   admin_users = {}
+
+   record_attendance(users, admin_users)
 
 # Run the attendance recorder
 record_attendance(users, admin_users)
