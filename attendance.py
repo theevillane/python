@@ -348,5 +348,3 @@ if __name__ == "__main__":
 
     record_attendance(users, admin_users)
 
-# Run the attendance recorder
-record_attendance(users, admin_users)
