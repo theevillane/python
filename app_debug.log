@@ -6,3 +6,7 @@
 2024-11-30 13:44:16,665 - DEBUG - Match found: ('ryan', '30d64d23412972663733f6b7b85612cafaaf5bfa6be28b7a66f38cde5fc39ac5', 'admin')
 2024-11-30 13:49:45,704 - DEBUG - Checking row: username=ryan, stored_hashed_password=30d64d23412972663733f6b7b85612cafaaf5bfa6be28b7a66f38cde5fc39ac5, role=admin
 2024-11-30 13:49:45,704 - DEBUG - Match found: ('ryan', '30d64d23412972663733f6b7b85612cafaaf5bfa6be28b7a66f38cde5fc39ac5', 'admin')
+2024-11-30 16:08:03,501 - DEBUG - Checking row: username=ryan, stored_hashed_password=30d64d23412972663733f6b7b85612cafaaf5bfa6be28b7a66f38cde5fc39ac5, role=admin
+2024-11-30 16:08:03,502 - DEBUG - Match found: ('ryan', '30d64d23412972663733f6b7b85612cafaaf5bfa6be28b7a66f38cde5fc39ac5', 'admin')
+2024-12-01 22:43:26,596 - DEBUG - Checking row: username=ryan, stored_hashed_password=30d64d23412972663733f6b7b85612cafaaf5bfa6be28b7a66f38cde5fc39ac5, role=admin
+2024-12-01 22:43:26,620 - DEBUG - Match found: ('ryan', '30d64d23412972663733f6b7b85612cafaaf5bfa6be28b7a66f38cde5fc39ac5', 'admin')
