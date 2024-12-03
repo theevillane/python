@@ -30,8 +30,8 @@ def basketball_score_tracker():
             print(f"Total shots made: {total_shots}")
 
         elif choice == '5':
-            if total_score > 15:
-                total_score += 1
+            if total_score > 25:
+                total_score += 3
                 print(f"Score is {total_score}")
         
         elif choice == '6':
