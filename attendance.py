@@ -251,42 +251,30 @@ def login_user(users, admin_users):
 
 def reset_password():
     """Reset a user's password."""
-    try:
-        wb = load_workbook("attendance_db.xlsx")
-        sheet = wb["Users"]
-        
-        username = input("Enter the username for password reset: ").strip().lower()
-        user_found = False
+    username = input("Enter the username for password reset: ").strip().lower()
 
-        for row in sheet.iter_rows(min_row=2, max_col=3, values_only=False):
+    sheet, wb = load_sheet("Users")
+    if sheet:
+        for row in sheet.iter_rows(min_row=2, max_col=3):
             if row[0].value.lower() == username:
-                user_found = True
-
-                # If admin is resetting, ask for confirmation
-                is_admin_reset = input("Are you an admin resetting this password? (yes/no): ").strip().lower() == 'yes'
-                if is_admin_reset:
-                    admin_password = getpass("Enter the admin confirmation password: ")
-                    admin_hash = hash_password(os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo"))
-                    if hash_password(admin_password) != admin_hash:
-                        print("Admin confirmation failed. Password reset aborted.")
-                        return
-
-                # Prompt for a new password
                 new_password = getpass("Enter the new password: ")
                 if not is_strong_password(new_password):
-                    print("The password is too weak. Please choose a stronger one.")
+                    print("Weak password. Must meet criteria.")
                     return
-
-                # Update the password
                 row[1].value = hash_password(new_password)
-                wb.save("attendance_db.xlsx")
-                print("Password reset successfully.")
-                return
+                save_to_excel(wb)
 
-        if not user_found:
-            print("Username not found in the system.")
-    except Exception as e:
-        print(f"Error during password reset: {e}")
+                # Send notification
+                to_email = input("Enter the email address for notification: ").strip()
+                subject = "Password Reset Notification"
+                message = f"Dear {username}, your password has been successfully reset."
+                send_email_notification(to_email, subject, message)
+
+                print("Password reset successfully, and notification sent.")
+                return
+        print("Username not found.")
+    else:
+        print("Unable to access user data.")
 
 
 
