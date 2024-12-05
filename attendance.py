@@ -122,6 +122,18 @@ def load_sheet(sheet_name):
         print(f"File '{EXCEL_FILE}' not found.")
     return None, None
 
+def search_in_excel(sheet_name, column_name, search_term):
+    """Search for a specific term in a column of an Excel sheet."""
+    sheet, _ = load_sheet(sheet_name)
+    if sheet:
+        print(f"Search Results in {sheet_name}:")
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            if search_term.lower() in str(row).lower():
+                print(row)
+    else:
+        print("Unable to access the sheet.")
+
+
 def add_to_attendance_list(username, attendance_list):
     """Add a username to the attendance list."""
     name = input("Enter the student's name to add: ").strip().upper()
