@@ -358,28 +358,25 @@ def confirm_exit():
         return True
 
 
-def record_attendance(users, admin_users):
-    """Main function to handle the attendance system."""
-    attendance_list = []
-
+def main_menu():
     while True:
-        print()
         local_time = time.localtime()
         print(f"It is {local_time.tm_year}, {local_time.tm_mon}, {local_time.tm_mday}   Time:{local_time.tm_hour}:{local_time.tm_min}:{local_time.tm_sec}")
-        print()
-        print("Welcome to our class today.")
-        print("Make sure you login to the class and add your name to the attendance list.")
-        print("\n1. Register User")
+
+        print("\nMain Menu")
+        print("1. Register User")
         print("2. Login")
         print("3. View Attendance")
         print("4. Reset Password")
-        print("5. Exit")
-        user_choice = input("Choose an option (1-5): ")
+        print("5. Search")
+        print("6. Exit")
+        choice = input("Choose an option(1-6): ").strip()
 
-        if user_choice == '1':
+
+        if choice == '1':
             register_user(users, admin_users)
 
-        elif user_choice == '2':
+        elif choice == '2':
             username, role = login_user(users, admin_users)
             if role:
                 is_admin = (role == "admin")
@@ -429,13 +426,13 @@ def record_attendance(users, admin_users):
                     else:
                         print("Invalid option. Please choose a valid number.")
 
-        elif user_choice == '3':
+        elif choice == '3':
             view_attendance_from_excel()
         
-        elif user_choice == '4':
+        elif choice == '4':
             reset_password()
 
-        elif user_choice == '5':
+        elif choice == '5':
             if confirm_exit():
                 break
 
