@@ -5,6 +5,8 @@ from getpass import getpass
 import os
 import logging
 import time
+import smtplib
+from email.mime.text import MIMEText
 
 
 
@@ -18,6 +20,30 @@ logging.basicConfig(
 EXCEL_FILE = "attendance_db.xlsx"
 ADMIN_CONFIRM_PASSWORD = os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo")
 DEFAULT_PASSWORD = "password123"
+
+def send_email_notification(to_email, subject, message):
+    """Send an emailnotification."""
+    try:
+        from_email = "abc@example.com"
+        from_password = "your_email_password"
+        smtp_sever = "smpt@gmail.com"
+        smtp_port = 587
+
+        msg = MIMEText(message)
+        msg['subject'] = subject
+        msg['From'] = from_email
+        msg['To'] = to_email
+
+
+        with smtplib.SMTP(smtp_sever, smtp_port) as server:
+            server.starttls()
+            server.login(from_email, from_password)
+            server.sendmail(from_email, to_email, msg.as_string())
+
+        print(f"Notification sent to {to_email}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
 
 def initialize_excel():
     """Create excel file with the necessary sheets and headers."""
