@@ -44,7 +44,7 @@ def send_email_notification(to_email, subject, message):
         print(f"Notification sent to {to_email}")
     except Exception as e:
         print(f"Failed to send email: {e}")
-        
+
 def require_role(required_role):
     """Decorator to enforce role-based access."""
     def decorator(func):
@@ -56,6 +56,18 @@ def require_role(required_role):
             return func(username, role, *args, **kwargs)
         return wrapper
     return decorator
+
+@require_role("admin")
+def add_student(username, role):
+    """Add a student to the system (admin-only)."""
+    student_name = input("Enter the student's name to add: ").strip()
+    sheet, wb = load_sheet("Users")
+    if sheet:
+        hashed_password = hash_password(DEFAULT_PASSWORD)
+        sheet.append([student_name, hashed_password, "user"])
+        save_to_excel(wb)
+        print(f"Student '{student_name}' added successfully with default password.")
+
 
 def initialize_excel():
     """Create excel file with the necessary sheets and headers."""
