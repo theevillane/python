@@ -5,6 +5,7 @@ from getpass import getpass
 import os
 import logging
 import time
+import random
 from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
@@ -16,6 +17,13 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+def generate_otp():
+    """Generate a 6-digit OTP."""
+    return random.randint(100000, 999999)
+
+def verify_otp(user_otp, generated_otp):
+    """Verify the OTP entered by the user."""
+    return user_otp == generated_otp
 
 
 EXCEL_FILE = "attendance_db.xlsx"
