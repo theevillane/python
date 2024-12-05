@@ -133,6 +133,26 @@ def search_in_excel(sheet_name, column_name, search_term):
     else:
         print("Unable to access the sheet.")
 
+def search_menu():
+    """Menu for searching users or attendance."""
+    while True:
+        print("\nSearch Menu")
+        print("1. Search Users")
+        print("2. Search Attendance")
+        print("3. Back to Main Menu")
+        choice = input("Choose an option: ").strip()
+
+        if choice == '1':
+            term = input("Enter username or part of the name to search: ").strip()
+            search_in_excel("Users", "Username", term)
+        elif choice == '2':
+            term = input("Enter username or attendance detail to search: ").strip()
+            search_in_excel("Attendance", "Username", term)
+        elif choice == '3':
+            break
+        else:
+            print("Invalid choice. Try again.")
+
 
 def add_to_attendance_list(username, attendance_list):
     """Add a username to the attendance list."""
