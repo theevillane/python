@@ -263,22 +263,30 @@ def register_user(users, admin_users):
         users[username] = hash_password(password)
         print("User registration successful!")
 
-def login_user(users, admin_users):
-    """Log in a user and return username and role."""
-    username = input("Enter your username: ").lower()
-    if username in users or username in admin_users:
-        print("User already exixst. Try a different one.")
+def login_user():
+    """Log in a user and return their username and role."""
+    username = input("Enter your username: ").strip().lower()
     password = getpass("Enter your password: ")
-    hashed_password = hash_password(password)  # Ensure password is hashed before validation
+    hashed_password = hash_password(password)
 
-    role = validate_login(username, hashed_password)
+    sheet, _ = load_sheet("Users")
+    if sheet:
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            if row[0].lower() == username and row[1] == hashed_password:
+                # Generate OTP
+                otp = generate_otp()
+                print(f"Your OTP is: {otp}")
+                user_otp = int(input("Enter the OTP sent to your email: "))
 
-    if role:
-        print(f"Welcome, {username}! You are an {role}")
-        return username, role
-    else:
-        print("Invalid username or password.")
-        return None, None
+                if not verify_otp(user_otp, otp):
+                    print("Invalid OTP. Login failed.")
+                    return None, None
+
+                print(f"Welcome, {username}! You are logged in as {row[2]}.")
+                return username, row[2]
+    print("Invalid username or password.")
+    return None, None
+
 
 
 def reset_password():
