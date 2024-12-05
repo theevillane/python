@@ -5,6 +5,7 @@ from getpass import getpass
 import os
 import logging
 import time
+from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
 
@@ -43,7 +44,18 @@ def send_email_notification(to_email, subject, message):
         print(f"Notification sent to {to_email}")
     except Exception as e:
         print(f"Failed to send email: {e}")
-
+        
+def require_role(required_role):
+    """Decorator to enforce role-based access."""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(username, role, *args, **kwargs):
+            if role != required_role:
+                print(f"Access denied. You must be a {required_role} to perform this action.")
+                return
+            return func(username, role, *args, **kwargs)
+        return wrapper
+    return decorator
 
 def initialize_excel():
     """Create excel file with the necessary sheets and headers."""
