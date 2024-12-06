@@ -17,6 +17,11 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+
+EXCEL_FILE = "attendance_db.xlsx"
+ADMIN_CONFIRM_PASSWORD = os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo")
+DEFAULT_PASSWORD = "password123"
+
 def generate_otp():
     """Generate a 6-digit OTP."""
     return random.randint(100000, 999999)
@@ -24,11 +29,6 @@ def generate_otp():
 def verify_otp(user_otp, generated_otp):
     """Verify the OTP entered by the user."""
     return user_otp == generated_otp
-
-
-EXCEL_FILE = "attendance_db.xlsx"
-ADMIN_CONFIRM_PASSWORD = os.getenv("ADMIN_CONFIRM_PASSWORD", "Kijanamdogo")
-DEFAULT_PASSWORD = "password123"
 
 def send_email_notification(to_email, subject, message):
     """Send an emailnotification."""
