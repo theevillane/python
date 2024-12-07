@@ -339,9 +339,11 @@ def main_menu():
             if exit == 'yes':
                 print("Exiting application. Goodbye!")
                 break
+            elif exit == 'no':
+                print("Invalid choice. Try again.")
+                continue
             else:
-              print("Invalid choice. Try again.")
-              continue
+                print("Invalid option, please type 'yes' or 'no'.")
 
 if __name__ == "__main__":
     main_menu()
