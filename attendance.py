@@ -278,10 +278,13 @@ def main_menu():
                 else:
                     print("Attendance tracking for regular users is under development.")
         elif choice == "3":
-            print("Exiting application. Goodbye!")
-            break
-        else:
-            print("Invalid choice. Try again.")
+            exit = input("Do you wish to exit the program? yes/no: ")
+            if exit == 'yes':
+                print("Exiting application. Goodbye!")
+                break
+            else:
+              print("Invalid choice. Try again.")
+              continue
 
 if __name__ == "__main__":
     main_menu()
