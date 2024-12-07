@@ -176,6 +176,23 @@ def login_user():
     print("Invalid username or password.")
     return None, None
 
+def generate_report_by_date():
+    """Generate attendance report filtered by date."""
+    start_date = input("Enter the start date (YYYY-MM-DD): ").strip()
+    end_date = input("Enter the end date (YYYY-MM-DD): ").strip()
+
+    sheet, _ = load_sheet("Attendance")
+    if not sheet:
+        print("Error loading attendance data.")
+        return
+
+    print(f"Attendance from {start_date} to {end_date}:")
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        # Assume date is stored in the third column
+        attendance_date = row[2][:10]  # Extract date portion
+        if start_date <= attendance_date <= end_date:
+            print(row)
+
 
 def add_to_attendance_list(username):
     """Add a student to the attendance list with a timestamp."""
