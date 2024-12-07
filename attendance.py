@@ -199,6 +199,25 @@ def manage_attendance(username, role):
         else:
             print("Invalid option. Try again.")
 
+def log_audit_action(username, action, details=""):
+    """Log administrative actions with timestamps."""
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sheet, wb = load_sheet("Audit Log")
+
+    # Initialize Audit Log sheet if it doesn't exist
+    if not sheet:
+        sheet, wb = load_sheet("Audit Log")
+        if not sheet:
+            print("Error loading audit log.")
+            return
+
+        sheet.append(["Timestamp", "Username", "Action", "Details"])
+
+    sheet.append([timestamp, username, action, details])
+    save_to_excel(wb)
+    logging.info(f"{username} performed action: {action} at {timestamp}. Details: {details}")
+
+
 def add_to_attendance_list(username):
     """Add a student to the attendance list."""
     student_name = input("Enter the student's name to add: ").strip()
