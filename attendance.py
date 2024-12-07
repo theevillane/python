@@ -4,7 +4,7 @@ from openpyxl import Workbook, load_workbook
 from getpass import getpass
 import os
 import logging
-import time
+from datetime import datetime
 import random
 from functools import wraps
 import smtplib
@@ -70,8 +70,11 @@ def save_to_excel(workbook):
         logging.error(f"Error saving workbook: {e}")
 
 def send_email_notification(to_email, subject, message):
-    """Send an email notification."""
+    """Send an email notification with timestamp."""
     try:
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        message += f"\n\nAction Time: {timestamp}"
+
         from_email = "your_email@example.com"
         from_password = "your_email_password"
         smtp_server = "smtp.gmail.com"
@@ -87,9 +90,10 @@ def send_email_notification(to_email, subject, message):
             server.login(from_email, from_password)
             server.sendmail(from_email, to_email, msg.as_string())
 
-        print(f"Notification sent to {to_email}")
+        print(f"Notification sent to {to_email} at {timestamp}.")
     except Exception as e:
         print(f"Failed to send email: {e}")
+
 
 def generate_otp():
     """Generate a 6-digit OTP."""
