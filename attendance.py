@@ -176,6 +176,23 @@ def login_user():
     print("Invalid username or password.")
     return None, None
 
+
+def add_to_attendance_list(username):
+    """Add a student to the attendance list with a timestamp."""
+    student_name = input("Enter the student's name to mark attendance: ").strip()
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    sheet, wb = load_sheet("Attendance")
+    if not sheet:
+        print("Error loading attendance data.")
+        return
+
+    # Append student name and timestamp
+    sheet.append([student_name, "Present", timestamp])
+    save_to_excel(wb)
+    print(f"Attendance marked for {student_name} at {timestamp}.")
+
+
 @require_role("admin")
 def manage_attendance(username, role):
     """Admin-only attendance management."""
