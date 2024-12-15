@@ -10,6 +10,7 @@ from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
 
+
 logging.basicConfig(
     filename='app_debug.log',
     level=logging.DEBUG,
@@ -317,33 +318,33 @@ def reset_password():
 
 def main_menu():
     """Main menu for the application."""
-    initialize_excel()
-    while True:
-        print("\nMain Menu")
-        print("1. Register User")
-        print("2. Login")
-        print("3. Exit")
-        choice = input("Choose an option: ").strip()
+    try:
+        initialize_excel()
+        while True:
+            print("\nMain Menu")
+            print("1. Register User")
+            print("2. Login")
+            print("3. Exit")
+            choice = input("Choose an option: ").strip()
 
-        if choice == "1":
-            register_user()
-        elif choice == "2":
-            username, role = login_user()
-            if username and role:
-                if role == "admin":
-                    manage_attendance(username, role)
-                else:
-                    print("Attendance tracking for regular users is under development.")
-        elif choice == "3":
-            exit = input("Do you wish to exit the program? yes/no: ")
-            if exit == 'yes':
-                print("Exiting application. Goodbye!")
-                break
-            elif exit == 'no':
-                print("Invalid choice. Try again.")
-                continue
+            if choice == "1":
+                register_user()
+            elif choice == "2":
+                username, role = login_user()
+                if username and role:
+                    if role == "admin":
+                        manage_attendance(username, role)
+                    else:
+                        print("Attendance tracking for regular users is under development.")
+            elif choice == "3":
+                if input("Are you sure you want to exit? (yes/no): ").strip().lower() == "yes":
+                    print("Goodbye!")
+                    break
             else:
-                print("Invalid option, please type 'yes' or 'no'.")
+                print("Invalid option. Try again.")
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+        print("An unexpected error occurred. Please check the logs.")
 
 if __name__ == "__main__":
     main_menu()
