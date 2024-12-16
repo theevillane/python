@@ -10,7 +10,6 @@ from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
 
-
 logging.basicConfig(
     filename='app_debug.log',
     level=logging.DEBUG,
