@@ -195,19 +195,35 @@ def generate_report_by_date():
 
 
 def add_to_attendance_list(username):
-    """Add a student to the attendance list with a timestamp."""
-    student_name = input("Enter the student's name to mark attendance: ").strip()
+    """Allow students to add themselves to the attendance list."""
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
     sheet, wb = load_sheet("Attendance")
     if not sheet:
         print("Error loading attendance data.")
         return
 
-    # Append student name and timestamp
-    sheet.append([student_name, "Present", timestamp])
+    # Check if student is already marked present
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if row[0].lower() == username.lower():
+            print(f"{username} is already marked present.")
+            return
+
+    # Mark attendance
+    sheet.append([username, "Present", timestamp])
     save_to_excel(wb)
-    print(f"Attendance marked for {student_name} at {timestamp}.")
+    print(f"Attendance marked for {username} at {timestamp}.")
+
+def view_attendance_list():
+    """Display the attendance list."""
+    sheet, _ = load_sheet("Attendance")
+    if not sheet:
+        print("Error loading attendance data.")
+        return
+
+    print("\n--- Attendance List ---")
+    print(f"{'Username':<20}{'Status':<10}{'Timestamp':<20}")
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        print(f"{row[0]:<20}{row[1]:<10}{row[2]:<20}")
 
 
 @require_role("admin")
@@ -344,6 +360,77 @@ def main_menu():
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
         print("An unexpected error occurred. Please check the logs.")
+
+def main_menu():
+    """Main menu for the application."""
+    try:
+        initialize_excel()
+        while True:
+            print("\n--- Main Menu ---")
+            print("1. Register User")
+            print("2. Login")
+            print("3. Exit")
+            choice = input("Choose an option: ").strip()
+
+            if choice == "1":
+                register_user()
+            elif choice == "2":
+                username, role = login_user()
+                if username and role:
+                    if role == "admin":
+                        admin_menu(username, role)
+                    elif role == "user":
+                        student_menu(username)
+            elif choice == "3":
+                if input("Are you sure you want to exit? (yes/no): ").strip().lower() == "yes":
+                    print("Goodbye!")
+                    break
+            else:
+                print("Invalid option. Try again.")
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+        print("An unexpected error occurred. Please check the logs.")
+
+def student_menu(username):
+    """Menu for students to manage their attendance."""
+    while True:
+        print("\n--- Student Menu ---")
+        print("1. Add My Attendance")
+        print("2. View Attendance List")
+        print("3. Back to Main Menu")
+        choice = input("Choose an option: ").strip()
+
+        if choice == "1":
+            add_to_attendance_list(username)
+        elif choice == "2":
+            view_attendance_list()
+        elif choice == "3":
+            break
+        else:
+            print("Invalid option. Try again.")
+
+@require_role("admin")
+def admin_menu(username, role):
+    """Menu for admins to manage attendance."""
+    while True:
+        print("\n--- Admin Menu ---")
+        print("1. Add Student to Attendance")
+        print("2. View Attendance List")
+        print("3. Remove Student from Attendance")
+        print("4. Back to Main Menu")
+        choice = input("Choose an option: ").strip()
+
+        if choice == "1":
+            add_to_attendance_list(username)
+        elif choice == "2":
+            view_attendance_list()
+        elif choice == "3":
+            remove_from_attendance_list()
+        elif choice == "4":
+            break
+        else:
+            print("Invalid option. Try again.")
+
 
 if __name__ == "__main__":
     main_menu()
