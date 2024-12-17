@@ -9,6 +9,8 @@ import random
 from functools import wraps
 import smtplib
 from email.mime.text import MIMEText
+from_email = os.getenv('EMAIL_ADDRESS')
+from_password = os.getenv('EMAIL_PASSWORD')
 
 logging.basicConfig(
     filename='app_debug.log',
