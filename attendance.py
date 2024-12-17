@@ -77,7 +77,7 @@ def send_email_notification(to_email, subject, message):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         message += f"\n\nAction Time: {timestamp}"
 
-        from_email = "your_email@example.com"
+        from_email = "xinayosa@gmail.com"
         from_password = "your_email_password"
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
