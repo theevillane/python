@@ -15,7 +15,6 @@ from_email = os.getenv('EMAIL_ADDRESS')
 from_password = os.getenv('EMAIL_PASSWORD')
 if not from_email or not from_password:
     print("Email credentials are missing. Notifications will not be sent.")
-
 logging.basicConfig(
     filename='app_debug.log',
     level=logging.DEBUG,
