@@ -124,6 +124,18 @@ def add_check_out(username):
             return
     print("No check-in record found or already checked out.")
 
+def log_audit_action(username, action, details=""):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sheet, wb = load_sheet("Audit Log")
+    if not sheet:
+        wb = load_workbook(EXCEL_FILE)
+        sheet = wb.create_sheet("Audit Log")
+        sheet.append(["Timestamp", "Username", "Action", "Details"])
+
+    sheet.append([timestamp, username, action, details])
+    save_to_excel(wb)
+    logging.info(f"{username} | {action} | {details} | {timestamp}")
+
 
 def generate_otp():
     """Generate a 6-digit OTP."""
