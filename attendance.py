@@ -24,18 +24,14 @@ ADMIN_CONFIRM_PASSWORD = hashlib.sha256("Kijanamdogo".encode()).hexdigest()
 attendance_list = []
 
 def initialize_excel():
-    """Create excel file with the necessary sheets and headers."""
     if not os.path.exists(EXCEL_FILE):
         wb = Workbook()
-
-        # User sheet
         users_sheet = wb.active
         users_sheet.title = "Users"
-        users_sheet.append(["Username", "Password", "Role"])
+        users_sheet.append(["Username", "Password", "Role", "Email"])
 
-        # Attendance sheet
         attendance_sheet = wb.create_sheet("Attendance")
-        attendance_sheet.append(["Username", "Attendance"])
+        attendance_sheet.append(["Username", "Date", "Check-in-Time", "Check-out-Time", "Total Hours"])
 
         wb.save(EXCEL_FILE)
         print("Excel db initialized.")
