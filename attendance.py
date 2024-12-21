@@ -255,6 +255,17 @@ def add_to_attendance_list(username):
     save_to_excel(wb)
     print(f"Attendance marked for {username} at {timestamp}.")
 
+def view_attendance_from_excel():
+    """View attendance records from the Excel sheet."""
+    sheet, _ = load_sheet("Attendance")
+    if not sheet:
+        print("Error loading attendance data.")
+        return
+
+    print("\nAttendance Records:")
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        print(f"Username: {row[0]}, Attendance: {row[1]}")    
+
 def view_attendance_list():
     """Display the attendance list."""
     sheet, _ = load_sheet("Attendance")
@@ -337,16 +348,6 @@ def update_attendance_in_excel(username):
     save_to_excel(wb)
     print("Attendance has been updated in the Excel sheet.")
 
-def view_attendance_from_excel():
-    """View attendance records from the Excel sheet."""
-    sheet, _ = load_sheet("Attendance")
-    if not sheet:
-        print("Error loading attendance data.")
-        return
-
-    print("\nAttendance Records:")
-    for row in sheet.iter_rows(min_row=2, values_only=True):
-        print(f"Username: {row[0]}, Attendance: {row[1]}")
 
 def reset_password():
     """Reset a user's password."""
