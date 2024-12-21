@@ -274,9 +274,22 @@ def view_attendance_list():
         return
 
     print("\n--- Attendance List ---")
-    print(f"{'Username':<20}{'Status':<10}{'Timestamp':<20}")
-    for row in sheet.iter_rows(min_row=2, values_only=True):
-        print(f"{row[0]:<20}{row[1]:<10}{row[2]:<20}")
+    print(f"{'Username':<20}{'Date':<15}{'Check-in-Time':<20}{'Check-out-Time':<20}{'Total Hours':<15}")
+    print("-" * 90)
+
+    try:
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            if row[0]:  # Ensure row is not empty
+                username = row[0] or "N/A"
+                date = row[1] or "N/A"
+                check_in_time = row[2] or "N/A"
+                check_out_time = row[3] or "N/A"
+                total_hours = row[4] or "N/A"
+
+                print(f"{username:<20}{date:<15}{check_in_time:<20}{check_out_time:<20}{total_hours:<15}")
+    except Exception as e:
+        logging.error(f"Error displaying attendance list: {e}")
+        print("An unexpected error occurred while displaying attendance. Please check the logs.")
 
 
 @require_role("admin")
