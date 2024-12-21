@@ -11,10 +11,6 @@ import smtplib
 from email.mime.text import MIMEText
 
 
-from_email = os.getenv('EMAIL_ADDRESS')
-from_password = os.getenv('EMAIL_PASSWORD')
-if not from_email or not from_password:
-    print("Email credentials are missing. Notifications will not be sent.")
 logging.basicConfig(
     filename='app_debug.log',
     level=logging.DEBUG,
@@ -80,8 +76,12 @@ def send_email_notification(to_email, subject, message):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         message += f"\n\nAction Time: {timestamp}"
 
-        from_email = "xinayosa@gmail.com"
-        from_password = "your_email_password"
+        from_email = os.getenv('EMAIL_ADDRESS')
+        from_password = os.getenv('EMAIL_PASSWORD')
+        if not from_email or not from_password:
+           print("Email credentials are missing. Notifications will not be sent.")
+           return
+
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
 
