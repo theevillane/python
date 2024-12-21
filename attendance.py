@@ -95,6 +95,35 @@ def send_email_notification(to_email, subject, message):
     except Exception as e:
         print(f"Failed to send email: {e}")
 
+def add_check_in(username):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sheet, wb = load_sheet("Attendance")
+    if not sheet:
+        print("Error loading attendance data.")
+        return
+
+    sheet.append([username, datetime.now().date(), timestamp, "", ""])
+    save_to_excel(wb)
+    print(f"Check-in recorded for {username} at {timestamp}.")
+
+def add_check_out(username):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sheet, wb = load_sheet("Attendance")
+    if not sheet:
+        print("Error loading attendance data.")
+        return
+
+    for row in sheet.iter_rows(min_row=2):
+        if row[0].value == username and not row[3].value:
+            row[3].value = timestamp
+            check_in = datetime.strptime(row[2].value, '%Y-%m-%d %H:%M:%S')
+            check_out = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S')
+            row[4].value = str(check_out - check_in)
+            save_to_excel(wb)
+            print(f"Check-out recorded for {username} at {timestamp}.")
+            return
+    print("No check-in record found or already checked out.")
+
 
 def generate_otp():
     """Generate a 6-digit OTP."""
