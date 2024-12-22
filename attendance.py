@@ -26,12 +26,19 @@ attendance_list = []
 def initialize_excel():
     if not os.path.exists(EXCEL_FILE):
         wb = Workbook()
+        
+        # Users Sheet
         users_sheet = wb.active
         users_sheet.title = "Users"
         users_sheet.append(["Username", "Password", "Role", "Email"])
 
+        # Attendance Sheet
         attendance_sheet = wb.create_sheet("Attendance")
         attendance_sheet.append(["Username", "Date", "Check-in-Time", "Check-out-Time", "Total Hours"])
+
+        # Audit Log Sheet
+        audit_sheet = wb.create_sheet("Audit Log")
+        audit_sheet.append(["Timestamp", "Username", "Action", "Details"])
 
         wb.save(EXCEL_FILE)
         print("Excel db initialized.")
@@ -291,24 +298,26 @@ def view_attendance_list():
         print("An unexpected error occurred while displaying attendance. Please check the logs.")
 
 @require_role("admin")
-def manage_attendance(username, role):
-    """Admin-only attendance management."""
-    print(f"{username} is managing attendance as {role}.")
+def admin_menu(username, role):
+    """Menu for admins to manage attendance."""
     while True:
-        print("\nAttendance Management")
-        print("1. Add Student")
-        print("2. Remove Student")
-        print("3. View Attendance")
-        print("4. Back")
+        print("\n--- Admin Menu ---")
+        print("1. Add Attendance Record")
+        print("2. Remove Attendance Record")
+        print("3. View Attendance List")
+        print("4. Generate Attendance Report")
+        print("5. Back to Main Menu")
         choice = input("Choose an option: ").strip()
 
         if choice == "1":
-            add_to_attendance_list(username)
+            add_student_attendance(username)
         elif choice == "2":
             remove_from_attendance_list()
         elif choice == "3":
-            view_attendance_from_excel()
+            view_attendance_list()
         elif choice == "4":
+            generate_report_by_date()
+        elif choice == "5":
             break
         else:
             print("Invalid option. Try again.")
