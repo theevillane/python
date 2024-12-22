@@ -236,22 +236,21 @@ def generate_report_by_date():
             print(row)
 
 
-def add_to_attendance_list(username):
-    """Allow students to add themselves to the attendance list."""
+def add_student_attendance(username):
+    """Allow students to add their attendance."""
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     sheet, wb = load_sheet("Attendance")
     if not sheet:
         print("Error loading attendance data.")
         return
 
-    # Check if student is already marked present
+    # Check if student already checked in
     for row in sheet.iter_rows(min_row=2, values_only=True):
-        if row[0].lower() == username.lower():
-            print(f"{username} is already marked present.")
+        if row[0] == username and not row[3]:  # No check-out time yet
+            print("You have already checked in.")
             return
 
-    # Mark attendance
-    sheet.append([username, "Present", timestamp])
+    sheet.append([username, datetime.now().date(), timestamp, "", ""])
     save_to_excel(wb)
     print(f"Attendance marked for {username} at {timestamp}.")
 
