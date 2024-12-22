@@ -291,7 +291,6 @@ def view_attendance_list():
         logging.error(f"Error displaying attendance list: {e}")
         print("An unexpected error occurred while displaying attendance. Please check the logs.")
 
-
 @require_role("admin")
 def manage_attendance(username, role):
     """Admin-only attendance management."""
@@ -362,27 +361,29 @@ def update_attendance_in_excel(username):
     print("Attendance has been updated in the Excel sheet.")
 
 
-def reset_password():
-    """Reset a user's password."""
+def reset_password_via_email():
+    """Reset user password and send a temporary password via email."""
     username = input("Enter the username for password reset: ").strip().lower()
     sheet, wb = load_sheet("Users")
     if not sheet:
         print("Error accessing user data.")
         return
 
+    user_email = input("Enter the user's registered email: ").strip()
+    temp_password = f"Temp{random.randint(1000, 9999)}"
+    hashed_temp_password = hash_password(temp_password)
+
     for row in sheet.iter_rows(min_row=2):
         if row[0].value.lower() == username:
-            new_password = getpass("Enter a new password: ")
-            if not is_strong_password(new_password):
-                print("Weak password. Try again.")
-                return
-            confirm_password = getpass("Confirm new password: ")
-            if new_password != confirm_password:
-                print("Passwords do not match.")
-                return
-            row[1].value = hash_password(new_password)
+            row[1].value = hashed_temp_password
             save_to_excel(wb)
-            print(f"Password for '{username}' has been reset.")
+            subject = "Password Reset Notification"
+            message = f"Your temporary password is: {temp_password}\nPlease change it after logging in."
+            try:
+                send_email_notification(user_email, subject, message)
+                print(f"Temporary password sent to {user_email}")
+            except Exception as e:
+                print(f"Failed to send email: {e}")
             return
 
     print("Username not found.")
