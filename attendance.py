@@ -199,6 +199,11 @@ def register_user():
     sheet.append([username, hashed_password, role])
     save_to_excel(wb)
     print(f"{role.capitalize()} '{username}' registered successfully.")
+    
+    if role == "user":
+       # Automatically add user to attendance list
+       add_student_attendance(username)
+       print(f"{username} has been automatically added to the attendance list.")
 
 def login_user():
     """Log in a user and return their username and role."""
