@@ -414,9 +414,9 @@ def main_menu():
                 username, role = login_user()
                 if username and role:
                     if role == "admin":
-                        manage_attendance(username, role)
-                    else:
-                        print("Attendance tracking for regular users is under development.")
+                        admin_menu(username, role)
+                    elif role == "user":
+                        student_menu(username)
             elif choice == "3":
                 if input("Are you sure you want to exit? (yes/no): ").strip().lower() == "yes":
                     print("Goodbye!")
